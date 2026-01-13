@@ -1,0 +1,233 @@
+import { customAlphabet } from 'nanoid';
+import { Room, Player, GameState } from '../../../packages/shared/src/types';
+import { ROOM_ID_LENGTH, MIN_PLAYERS } from '../../../packages/shared/src/constants';
+import * as store from './store';
+import { initializeGame, executeMove, processEndOfRound } from '../game/engine';
+import { PlayerMove } from '../../../packages/shared/src/types';
+
+// Generate URL-friendly room IDs
+const generateRoomId = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', ROOM_ID_LENGTH);
+
+export function createNewRoom(
+  hostId: string,
+  hostName: string,
+  maxPlayers: 2 | 3 | 4
+): Room {
+  let roomId = generateRoomId();
+
+  // Ensure unique room ID
+  while (store.roomExists(roomId)) {
+    roomId = generateRoomId();
+  }
+
+  const hostPlayer: Player = {
+    id: hostId,
+    name: hostName,
+    board: {
+      patternLines: [],
+      wall: [],
+      floorLine: [],
+      score: 0,
+    },
+    isConnected: true,
+    isHost: true,
+  };
+
+  return store.createRoom(roomId, hostPlayer, maxPlayers);
+}
+
+export function joinRoom(
+  roomId: string,
+  playerId: string,
+  playerName: string
+): { success: boolean; room?: Room; error?: string } {
+  const room = store.getRoom(roomId);
+
+  if (!room) {
+    return { success: false, error: 'Room not found' };
+  }
+
+  if (room.gameState.phase !== 'waiting') {
+    return { success: false, error: 'Game already in progress' };
+  }
+
+  if (room.gameState.players.length >= room.maxPlayers) {
+    return { success: false, error: 'Room is full' };
+  }
+
+  // Check if player name is already taken
+  const nameTaken = room.gameState.players.some(
+    (p) => p.name.toLowerCase() === playerName.toLowerCase()
+  );
+  if (nameTaken) {
+    return { success: false, error: 'Name already taken in this room' };
+  }
+
+  const newPlayer: Player = {
+    id: playerId,
+    name: playerName,
+    board: {
+      patternLines: [],
+      wall: [],
+      floorLine: [],
+      score: 0,
+    },
+    isConnected: true,
+    isHost: false,
+  };
+
+  const updatedRoom = store.addPlayerToRoom(roomId, newPlayer);
+
+  if (!updatedRoom) {
+    return { success: false, error: 'Failed to join room' };
+  }
+
+  return { success: true, room: updatedRoom };
+}
+
+export function leaveRoom(
+  roomId: string,
+  playerId: string
+): { room: Room | null; roomDeleted: boolean } {
+  const updatedRoom = store.removePlayerFromRoom(roomId, playerId);
+  return {
+    room: updatedRoom,
+    roomDeleted: updatedRoom === null,
+  };
+}
+
+export function startGame(roomId: string, playerId: string): {
+  success: boolean;
+  gameState?: GameState;
+  error?: string;
+} {
+  const room = store.getRoom(roomId);
+
+  if (!room) {
+    return { success: false, error: 'Room not found' };
+  }
+
+  // Check if player is the host
+  const player = room.gameState.players.find((p) => p.id === playerId);
+  if (!player?.isHost) {
+    return { success: false, error: 'Only the host can start the game' };
+  }
+
+  if (room.gameState.players.length < MIN_PLAYERS) {
+    return { success: false, error: `Need at least ${MIN_PLAYERS} players to start` };
+  }
+
+  if (room.gameState.phase !== 'waiting') {
+    return { success: false, error: 'Game already started' };
+  }
+
+  const gameState = initializeGame(roomId, room.gameState.players);
+  store.updateGameState(roomId, gameState);
+
+  return { success: true, gameState };
+}
+
+export function makeMove(
+  roomId: string,
+  move: PlayerMove
+): { success: boolean; gameState?: GameState; error?: string } {
+  const room = store.getRoom(roomId);
+
+  if (!room) {
+    return { success: false, error: 'Room not found' };
+  }
+
+  try {
+    let newGameState = executeMove(room.gameState, move);
+
+    // If phase changed to wall-tiling, process it automatically
+    if (newGameState.phase === 'wall-tiling') {
+      const result = processEndOfRound(newGameState);
+      newGameState = result.gameState;
+    }
+
+    store.updateGameState(roomId, newGameState);
+    return { success: true, gameState: newGameState };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Invalid move',
+    };
+  }
+}
+
+export function restartGame(roomId: string, playerId: string): {
+  success: boolean;
+  gameState?: GameState;
+  error?: string;
+} {
+  const room = store.getRoom(roomId);
+
+  if (!room) {
+    return { success: false, error: 'Room not found' };
+  }
+
+  // Check if player is the host
+  const player = room.gameState.players.find((p) => p.id === playerId);
+  if (!player?.isHost) {
+    return { success: false, error: 'Only the host can restart the game' };
+  }
+
+  if (room.gameState.phase !== 'finished') {
+    return { success: false, error: 'Game is not finished yet' };
+  }
+
+  // Keep the same players but reset the game
+  const players = room.gameState.players.map((p) => ({
+    ...p,
+    board: {
+      patternLines: [],
+      wall: [],
+      floorLine: [],
+      score: 0,
+    },
+  }));
+
+  const gameState = initializeGame(roomId, players);
+  store.updateGameState(roomId, gameState);
+
+  return { success: true, gameState };
+}
+
+export function getRoom(roomId: string): Room | undefined {
+  return store.getRoom(roomId);
+}
+
+export function setPlayerConnection(
+  roomId: string,
+  playerId: string,
+  isConnected: boolean
+): Room | null {
+  return store.setPlayerConnected(roomId, playerId, isConnected);
+}
+
+export function reconnectPlayer(
+  roomId: string,
+  playerId: string,
+  newSocketId: string
+): { success: boolean; room?: Room; error?: string } {
+  const room = store.getRoom(roomId);
+
+  if (!room) {
+    return { success: false, error: 'Room not found' };
+  }
+
+  // Find the player by their original ID
+  const playerIndex = room.gameState.players.findIndex((p) => p.id === playerId);
+  if (playerIndex === -1) {
+    return { success: false, error: 'Player not found in room' };
+  }
+
+  // Update player's socket ID and connection status
+  room.gameState.players[playerIndex].id = newSocketId;
+  room.gameState.players[playerIndex].isConnected = true;
+
+  store.updateRoom(roomId, room);
+
+  return { success: true, room };
+}

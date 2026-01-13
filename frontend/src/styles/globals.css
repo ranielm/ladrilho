@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --tile-blue: #3b82f6;
+  --tile-yellow: #facc15;
+  --tile-red: #ef4444;
+  --tile-black: #1f2937;
+  --tile-white: #f8fafc;
+}
+
+body {
+  @apply bg-gradient-to-br from-slate-900 to-slate-800 min-h-screen text-white;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.tile {
+  @apply w-8 h-8 rounded-sm shadow-md transition-transform duration-200 cursor-pointer;
+}
+
+.tile:hover {
+  @apply transform scale-110;
+}
+
+.tile-blue {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.tile-yellow {
+  background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+}
+
+.tile-red {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.tile-black {
+  background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+}
+
+.tile-white {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  @apply border border-gray-300;
+}
+
+.tile-first-player {
+  @apply bg-cyan-500 text-white flex items-center justify-center text-xs font-bold;
+}
+
+.factory {
+  @apply bg-slate-700 rounded-lg p-3 shadow-lg grid grid-cols-2 gap-2;
+}
+
+.pattern-line {
+  @apply flex justify-end gap-1;
+}
+
+.wall-cell {
+  @apply w-8 h-8 rounded-sm border border-slate-600;
+}
+
+.wall-cell.filled {
+  @apply border-0;
+}
+
+.wall-cell.empty {
+  @apply opacity-30;
+}
+
+.floor-line {
+  @apply flex gap-1 p-2 bg-slate-700 rounded;
+}
+
+.player-board {
+  @apply bg-slate-800 rounded-xl p-4 shadow-xl;
+}
+
+.current-turn {
+  @apply ring-4 ring-yellow-400 ring-opacity-75;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-600 rounded;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-500;
+}
