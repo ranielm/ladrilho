@@ -24,8 +24,8 @@ interface GameStore {
   // Actions
   setPlayerId: (id: string | null) => void;
   setConnected: (connected: boolean) => void;
-  setRoom: (room: Room | null) => void;
-  setGameState: (gameState: GameState | null) => void;
+  setRoom: (room: Room | null | ((prev: Room | null) => Room | null)) => void;
+  setGameState: (gameState: GameState | null | ((prev: GameState | null) => GameState | null)) => void;
   setSelectedTiles: (selection: TileSelection | null) => void;
   setError: (error: string | null) => void;
   clearError: () => void;
@@ -46,8 +46,12 @@ export const useGameStore = create<GameStore>((set) => ({
 
   setPlayerId: (id) => set({ playerId: id }),
   setConnected: (connected) => set({ isConnected: connected }),
-  setRoom: (room) => set({ room }),
-  setGameState: (gameState) => set({ gameState }),
+  setRoom: (room) => set((state) => ({
+    room: typeof room === 'function' ? room(state.room) : room
+  })),
+  setGameState: (gameState) => set((state) => ({
+    gameState: typeof gameState === 'function' ? gameState(state.gameState) : gameState
+  })),
   setSelectedTiles: (selection) => set({ selectedTiles: selection }),
   setError: (error) => set({ error }),
   clearError: () => set({ error: null }),

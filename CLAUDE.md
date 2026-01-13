@@ -32,3 +32,17 @@ Complete implementation of Azul Online, a multiplayer board game prototype. The 
 ## Summary:
 
 Fixed Vite build errors caused by incorrect relative import paths in frontend components. All imports now use the @shared alias configured in vite.config.ts. Added comprehensive documentation for the Online Multiplayer Architecture including client-server model, WebSocket connectivity, turn enforcement, disconnect handling, security measures, and commercial readiness features. The game is now fully functional with real-time multiplayer support for 2-4 players connecting from different locations.
+
+---
+
+# AZUL-ONLINE: Fix Host Black Screen When Player Joins
+
+**Date:** 2026-01-13
+
+## Changes:
+
+- `frontend/src/store/gameStore.ts`: Updated setRoom and setGameState to support functional updates
+
+## Summary:
+
+Fixed a bug where the host would see a black screen when a second player joined the room. The issue was that the Zustand store's setRoom and setGameState functions only accepted direct values, but the useSocket hook was passing functional updates when handling the onPlayerJoined event. The store now properly detects when a function is passed and calls it with the previous state, enabling proper state updates when players join or leave.
