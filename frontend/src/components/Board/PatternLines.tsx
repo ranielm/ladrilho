@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { PatternLine, TileColor, WallCell } from '@shared/types';
 import { Tile } from '../Tile/Tile';
 import { canPlaceTileInPatternLine } from '../../utils/gameHelpers';
@@ -36,11 +35,11 @@ export function PatternLines({
         const isSelected = selectedLine === rowIndex;
 
         return (
-          <motion.div
+          <div
             key={rowIndex}
-            onClick={() => handleLineSelect(rowIndex, !!canPlace)}
-            onTouchEnd={(e) => {
+            onPointerUp={(e) => {
               e.preventDefault();
+              e.stopPropagation();
               handleLineSelect(rowIndex, !!canPlace);
             }}
             style={{ touchAction: 'manipulation' }}
@@ -74,7 +73,7 @@ export function PatternLines({
                 disabled
               />
             ))}
-          </motion.div>
+          </div>
         );
       })}
     </div>

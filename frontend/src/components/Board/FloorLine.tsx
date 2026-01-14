@@ -32,10 +32,10 @@ export function FloorLine({
           </span>
         ))}
       </div>
-      <motion.div
-        onClick={handleFloorSelect}
-        onTouchEnd={(e) => {
+      <div
+        onPointerUp={(e) => {
           e.preventDefault();
+          e.stopPropagation();
           handleFloorSelect();
         }}
         style={{ touchAction: 'manipulation' }}
@@ -67,7 +67,7 @@ export function FloorLine({
             }}
           />
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 }
