@@ -153,3 +153,120 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-slate-500;
 }
+
+/* ============================================
+   MOBILE-FIRST RESPONSIVE STYLES
+   ============================================ */
+
+/* Mobile: Stack everything vertically */
+@media (max-width: 767px) {
+  /* Increase touch targets for tiles */
+  .tile {
+    @apply w-10 h-10;
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .tile-sm {
+    @apply w-8 h-8;
+    min-width: 32px;
+    min-height: 32px;
+  }
+
+  /* Larger factory grid for touch */
+  .factory {
+    @apply p-4 gap-3;
+  }
+
+  /* Player board mobile optimization */
+  .player-board {
+    @apply p-3;
+  }
+
+  /* Wall cells larger for touch */
+  .wall-cell {
+    @apply w-10 h-10;
+  }
+
+  /* Floor line touch-friendly */
+  .floor-line {
+    @apply gap-2 p-3;
+  }
+
+  /* Pattern lines touch-friendly */
+  .pattern-line {
+    @apply gap-2;
+  }
+
+  /* Glass card mobile padding */
+  .glass-card {
+    @apply px-5 py-6;
+  }
+
+  /* Buttons larger for touch */
+  .landing-btn-primary,
+  .landing-btn-secondary {
+    @apply py-4 text-base;
+    min-height: 52px;
+  }
+
+  /* Hide decorative tiles on very small screens */
+  .landing-background > .absolute.pointer-events-none {
+    display: none;
+  }
+}
+
+/* Mobile landscape and small tablets */
+@media (min-width: 480px) and (max-width: 767px) {
+  .tile {
+    @apply w-9 h-9;
+  }
+
+  .wall-cell {
+    @apply w-9 h-9;
+  }
+}
+
+/* Tablet portrait */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .tile {
+    @apply w-8 h-8;
+  }
+
+  .wall-cell {
+    @apply w-8 h-8;
+  }
+}
+
+/* Safe area insets for notched phones */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+}
+
+/* Prevent text selection on game elements */
+.tile,
+.wall-cell,
+.factory,
+.pattern-line,
+.floor-line,
+.player-board {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Active states for touch feedback */
+@media (hover: none) {
+  .tile:active {
+    transform: scale(0.95);
+  }
+
+  .landing-btn-primary:active,
+  .landing-btn-secondary:active {
+    transform: translateY(2px);
+  }
+}

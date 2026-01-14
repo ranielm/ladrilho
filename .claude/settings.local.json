@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(docker-compose ps:*)",
+      "Bash(tasklist:*)",
+      "Bash(findstr:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfix\\(frontend\\): resolve host black screen when player joins\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)",
+      "Bash(npm install)",
+      "Bash(npm run dev:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat\\(frontend\\): add i18n support with PT-BR and EN-US languages\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit:*)",
+      "Bash(vercel --version:*)"
+    ]
+  }
+}

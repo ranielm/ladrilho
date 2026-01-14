@@ -29,48 +29,38 @@ export function GameBoard({
   const isMyTurn = currentPlayer?.id === playerId;
   const { t } = useTranslation();
 
+  // Sort players: local player first on mobile for better UX
+  const sortedPlayers = [...gameState.players].sort((a, b) => {
+    if (a.id === playerId) return -1;
+    if (b.id === playerId) return 1;
+    return 0;
+  });
+
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 pb-safe">
       {/* Game Controls Toolbar */}
       <GameControls onLeaveGame={onLeaveGame} />
 
-      {/* Game info header */}
-      <div className="text-center mb-6">
-        <h2 className="text-xl font-semibold mb-2">
+      {/* Game info header - compact on mobile */}
+      <div className="text-center mb-4 sm:mb-6">
+        <h2 className="text-lg sm:text-xl font-semibold mb-1 sm:mb-2">
           {t.round} {gameState.round}
         </h2>
         <motion.p
           key={currentPlayer?.id}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className={`text-lg ${isMyTurn ? 'text-green-400' : 'text-slate-400'}`}
+          className={`text-base sm:text-lg ${isMyTurn ? 'text-green-400' : 'text-slate-400'}`}
         >
           {isMyTurn ? t.yourTurn : t.playerTurn(currentPlayer?.name || '')}
         </motion.p>
       </div>
 
-      <div className="grid lg:grid-cols-[1fr_auto] gap-8">
-        {/* Player boards */}
-        <div className="order-2 lg:order-1">
-          <div className="grid md:grid-cols-2 gap-4">
-            {gameState.players.map((player) => (
-              <Board
-                key={player.id}
-                player={player}
-                isCurrentPlayer={player.id === currentPlayer?.id}
-                isMyBoard={player.id === playerId}
-                selectedTiles={player.id === playerId ? selectedTiles : null}
-                onMakeMove={onMakeMove}
-                onClearSelection={onClearSelection}
-                myPlayerId={playerId}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Factories and center */}
+      {/* Mobile: Vertical stack | Desktop: Side by side */}
+      <div className="flex flex-col lg:grid lg:grid-cols-[1fr_auto] gap-4 sm:gap-8">
+        {/* Factories and center - First on mobile for tile selection */}
         <div className="order-1 lg:order-2 lg:w-80">
-          <div className="sticky top-4">
+          <div className="lg:sticky lg:top-4">
             <FactoryDisplay
               factories={gameState.factories}
               centerPool={gameState.centerPool}
@@ -84,9 +74,9 @@ export function GameBoard({
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-4 p-3 bg-yellow-600/20 border border-yellow-600 rounded-lg text-center"
+                className="mt-3 sm:mt-4 p-2 sm:p-3 bg-yellow-600/20 border border-yellow-600 rounded-lg text-center"
               >
-                <p className="text-yellow-400 text-sm">
+                <p className="text-yellow-400 text-xs sm:text-sm">
                   {t.selected}: <span className="font-semibold capitalize">{selectedTiles.color}</span>
                   {' '}{t.tiles} {t.from}{' '}
                   <span className="font-semibold">
@@ -103,6 +93,24 @@ export function GameBoard({
                 </button>
               </motion.div>
             )}
+          </div>
+        </div>
+
+        {/* Player boards - Stacked vertically on mobile */}
+        <div className="order-2 lg:order-1">
+          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+            {sortedPlayers.map((player) => (
+              <Board
+                key={player.id}
+                player={player}
+                isCurrentPlayer={player.id === currentPlayer?.id}
+                isMyBoard={player.id === playerId}
+                selectedTiles={player.id === playerId ? selectedTiles : null}
+                onMakeMove={onMakeMove}
+                onClearSelection={onClearSelection}
+                myPlayerId={playerId}
+              />
+            ))}
           </div>
         </div>
       </div>
