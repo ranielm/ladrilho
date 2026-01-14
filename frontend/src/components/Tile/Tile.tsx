@@ -22,18 +22,31 @@ export function Tile({
 }: TileProps) {
   const sizes = {
     sm: 'w-6 h-6',
-    md: 'w-8 h-8',
+    md: 'w-8 h-8 min-w-[32px] min-h-[32px]',
     lg: 'w-10 h-10',
   };
 
   const colorClass = getTileColorClass(color);
   const isFirstPlayer = color === 'first-player';
 
+  const handleClick = () => {
+    if (!disabled && onClick) {
+      onClick();
+    }
+  };
+
   return (
     <motion.div
       whileHover={!disabled && onClick ? { scale: 1.15 } : {}}
       whileTap={!disabled && onClick ? { scale: 0.95 } : {}}
-      onClick={!disabled ? onClick : undefined}
+      onClick={handleClick}
+      onTouchEnd={(e) => {
+        if (!disabled && onClick) {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      style={{ touchAction: 'manipulation' }}
       className={`
         ${sizes[size]}
         ${colorClass}

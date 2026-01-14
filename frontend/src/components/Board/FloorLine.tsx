@@ -17,6 +17,12 @@ export function FloorLine({
   canPlace = false,
   disabled = false,
 }: FloorLineProps) {
+  const handleFloorSelect = () => {
+    if (canPlace && !disabled && onSelectFloor) {
+      onSelectFloor();
+    }
+  };
+
   return (
     <div className="mt-2">
       <div className="text-xs text-slate-500 mb-1 flex gap-1 justify-start pl-1">
@@ -27,10 +33,15 @@ export function FloorLine({
         ))}
       </div>
       <motion.div
-        onClick={canPlace && !disabled ? onSelectFloor : undefined}
+        onClick={handleFloorSelect}
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          handleFloorSelect();
+        }}
+        style={{ touchAction: 'manipulation' }}
         className={`
-          floor-line min-h-[40px]
-          ${canPlace && !disabled ? 'cursor-pointer hover:bg-slate-600 ring-2 ring-dashed ring-yellow-400/50' : ''}
+          floor-line min-h-[44px]
+          ${canPlace && !disabled ? 'cursor-pointer hover:bg-slate-600 active:bg-slate-500 ring-2 ring-dashed ring-yellow-400/50' : ''}
         `}
       >
         {floorLine.map((tile, index) => (

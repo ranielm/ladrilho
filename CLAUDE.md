@@ -97,3 +97,19 @@ Added internationalization (i18n) support with Portuguese (PT-BR) and English (E
 ## Summary:
 
 Major UI/UX improvements including a complete landing page redesign with "Modern Portuguese Architecture" glassmorphism aesthetic featuring floating animated decorative tiles and a tabbed interface for Quick Play (guest mode) and Login/Register (auth mode). Added user authentication UI with avatar upload that displays profile pictures as game tokens with customizable colored borders matching the tile palette. Implemented game controls toolbar with fullscreen toggle (using browser Fullscreen API) and leave game button with confirmation modal to prevent accidental exits. Fixed pattern lines and floor line empty slot visibility with restored dashed borders and faint backgrounds for better contrast against the dark theme.
+
+---
+
+# AZUL-ONLINE: Fix Mobile Touch Events for Tile Placement
+
+**Date:** 2026-01-14
+
+## Changes:
+
+- `frontend/src/components/Board/PatternLines.tsx`: Added onTouchEnd handler, touchAction: manipulation style, increased min-height to 44px
+- `frontend/src/components/Board/FloorLine.tsx`: Added onTouchEnd handler, touchAction: manipulation style, increased min-height to 44px
+- `frontend/src/components/Tile/Tile.tsx`: Added onTouchEnd handler, touchAction: manipulation style for better mobile support
+
+## Summary:
+
+Fixed mobile touch events where users could select tiles from factories but could not place them on pattern lines by tapping. The issue was that onClick handlers were not reliably triggered on mobile touch devices. Added onTouchEnd handlers with e.preventDefault() to all interactive elements (PatternLines, FloorLine, Tile) to ensure touch events are properly captured. Applied touchAction: 'manipulation' CSS to eliminate 300ms tap delay and prevent double-tap zoom. Increased minimum touch target heights to 44px following mobile accessibility guidelines.

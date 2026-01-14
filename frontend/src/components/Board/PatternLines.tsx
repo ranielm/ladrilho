@@ -21,6 +21,12 @@ export function PatternLines({
   selectedLine,
   disabled = false,
 }: PatternLinesProps) {
+  const handleLineSelect = (rowIndex: number, canPlace: boolean) => {
+    if (canPlace && !disabled) {
+      onSelectLine(rowIndex);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-1">
       {patternLines.map((line, rowIndex) => {
@@ -32,10 +38,15 @@ export function PatternLines({
         return (
           <motion.div
             key={rowIndex}
-            onClick={() => canPlace && !disabled && onSelectLine(rowIndex)}
+            onClick={() => handleLineSelect(rowIndex, !!canPlace)}
+            onTouchEnd={(e) => {
+              e.preventDefault();
+              handleLineSelect(rowIndex, !!canPlace);
+            }}
+            style={{ touchAction: 'manipulation' }}
             className={`
-              pattern-line h-8
-              ${canPlace && !disabled ? 'cursor-pointer hover:bg-slate-600' : ''}
+              pattern-line min-h-[44px] h-auto py-2
+              ${canPlace && !disabled ? 'cursor-pointer hover:bg-slate-600 active:bg-slate-500' : ''}
               ${isSelected ? 'bg-slate-600 ring-2 ring-yellow-400' : ''}
               ${canPlace && !isSelected ? 'bg-slate-700/50' : ''}
               rounded transition-all duration-150 p-1
