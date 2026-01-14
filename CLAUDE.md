@@ -112,3 +112,21 @@ Major UI/UX improvements including a complete landing page redesign with "Modern
 ## Summary:
 
 Fixed mobile touch events where users could select tiles from factories but could not place them on pattern lines by tapping. The issue was that Framer Motion's motion.div with onTouchEnd was not properly firing events on some mobile browsers. Replaced motion.div with regular div elements and switched to onPointerUp events which provide unified mouse and touch handling across all platforms. Added e.stopPropagation() to prevent event bubbling issues.
+
+---
+
+# AZUL-ONLINE: Game State Persistence with SQLite Auto-Save
+
+**Date:** 2026-01-14
+
+## Changes:
+
+- `backend/src/persistence/database.ts`: New SQLite persistence module using better-sqlite3
+- `backend/src/room/store.ts`: Added auto-save on every game state change, load from DB on startup
+- `backend/src/server.ts`: Initialize database and load persisted rooms before accepting connections
+- `backend/package.json`: Added better-sqlite3 and @types/better-sqlite3 dependencies
+- `frontend/src/hooks/useSocket.ts`: Switched from sessionStorage to localStorage for room/player IDs
+
+## Summary:
+
+Implemented game state persistence using SQLite (better-sqlite3) so players can close their browser and return to continue their game later. The server auto-saves room state to the database on every action (room creation, player join/leave, game moves). On server startup, all persisted rooms are loaded back into memory with players marked as disconnected. Frontend now uses localStorage instead of sessionStorage so reconnection data survives browser restarts. Rooms are automatically cleaned up after 48 hours of inactivity. To configure the database path on Render.com, set the `DB_PATH` environment variable (e.g., `/var/data/azul.db`).
