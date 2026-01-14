@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '../UI/Button';
+import { useTranslation } from '../../i18n/useLanguage';
 
 interface CreateRoomProps {
   onCreateRoom: (playerName: string, maxPlayers: 2 | 3 | 4) => void;
@@ -10,6 +11,7 @@ interface CreateRoomProps {
 export function CreateRoom({ onCreateRoom, onBack }: CreateRoomProps) {
   const [playerName, setPlayerName] = useState('');
   const [maxPlayers, setMaxPlayers] = useState<2 | 3 | 4>(4);
+  const { t } = useTranslation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,18 +26,18 @@ export function CreateRoom({ onCreateRoom, onBack }: CreateRoomProps) {
       animate={{ opacity: 1, y: 0 }}
       className="bg-slate-800 rounded-xl p-8 w-full max-w-md"
     >
-      <h2 className="text-2xl font-bold mb-6 text-center">Create Room</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">{t.createRoomTitle}</h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label className="block text-sm font-medium text-slate-300 mb-2">
-            Your Name
+            {t.yourName}
           </label>
           <input
             type="text"
             value={playerName}
             onChange={(e) => setPlayerName(e.target.value)}
-            placeholder="Enter your name"
+            placeholder={t.enterYourName}
             maxLength={20}
             className="w-full px-4 py-3 bg-slate-700 rounded-lg border border-slate-600
                      focus:border-blue-500 focus:ring-1 focus:ring-blue-500
@@ -46,7 +48,7 @@ export function CreateRoom({ onCreateRoom, onBack }: CreateRoomProps) {
 
         <div>
           <label className="block text-sm font-medium text-slate-300 mb-2">
-            Max Players
+            {t.maxPlayers}
           </label>
           <div className="flex gap-3">
             {([2, 3, 4] as const).map((num) => (
@@ -63,7 +65,7 @@ export function CreateRoom({ onCreateRoom, onBack }: CreateRoomProps) {
                   }
                 `}
               >
-                {num} Players
+                {num} {t.playersCount}
               </button>
             ))}
           </div>
@@ -71,7 +73,7 @@ export function CreateRoom({ onCreateRoom, onBack }: CreateRoomProps) {
 
         <div className="flex gap-3 pt-4">
           <Button type="button" variant="ghost" onClick={onBack} className="flex-1">
-            Back
+            {t.back}
           </Button>
           <Button
             type="submit"
@@ -79,7 +81,7 @@ export function CreateRoom({ onCreateRoom, onBack }: CreateRoomProps) {
             disabled={!playerName.trim()}
             className="flex-1"
           >
-            Create Room
+            {t.createRoom}
           </Button>
         </div>
       </form>

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Room, Player } from '@shared/types';
 import { Button } from '../UI/Button';
 import { copyToClipboard, getRoomUrl } from '../../utils/gameHelpers';
+import { useTranslation } from '../../i18n/useLanguage';
 
 interface LobbyProps {
   room: Room;
@@ -16,6 +17,7 @@ export function Lobby({ room, playerId, onStartGame, onLeaveRoom }: LobbyProps) 
   const currentPlayer = room.gameState.players.find((p) => p.id === playerId);
   const isHost = currentPlayer?.isHost;
   const canStart = room.gameState.players.length >= 2;
+  const { t } = useTranslation();
 
   const handleCopyLink = async () => {
     try {
@@ -33,17 +35,17 @@ export function Lobby({ room, playerId, onStartGame, onLeaveRoom }: LobbyProps) 
       animate={{ opacity: 1, y: 0 }}
       className="bg-slate-800 rounded-xl p-8 w-full max-w-md"
     >
-      <h2 className="text-2xl font-bold mb-2 text-center">Waiting Room</h2>
+      <h2 className="text-2xl font-bold mb-2 text-center">{t.waitingRoom}</h2>
 
       {/* Room Code */}
       <div className="text-center mb-6">
-        <p className="text-slate-400 text-sm mb-2">Room Code</p>
+        <p className="text-slate-400 text-sm mb-2">{t.roomCode}</p>
         <div className="flex items-center justify-center gap-3">
           <span className="text-4xl font-mono font-bold tracking-widest text-blue-400">
             {room.id}
           </span>
           <Button size="sm" variant="ghost" onClick={handleCopyLink}>
-            {copied ? 'Copied!' : 'Copy Link'}
+            {copied ? t.copied : t.copyLink}
           </Button>
         </div>
       </div>
@@ -52,7 +54,7 @@ export function Lobby({ room, playerId, onStartGame, onLeaveRoom }: LobbyProps) 
       <div className="mb-6">
         <div className="flex justify-between items-center mb-3">
           <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
-            Players
+            {t.playersList}
           </h3>
           <span className="text-sm text-slate-500">
             {room.gameState.players.length}/{room.maxPlayers}
@@ -78,13 +80,13 @@ export function Lobby({ room, playerId, onStartGame, onLeaveRoom }: LobbyProps) 
                 <span className="font-medium">
                   {player.name}
                   {player.id === playerId && (
-                    <span className="text-blue-400 ml-2">(You)</span>
+                    <span className="text-blue-400 ml-2">({t.you})</span>
                   )}
                 </span>
               </div>
               {player.isHost && (
                 <span className="text-xs bg-yellow-600 px-2 py-1 rounded font-semibold">
-                  HOST
+                  {t.host}
                 </span>
               )}
             </motion.div>
@@ -97,7 +99,7 @@ export function Lobby({ room, playerId, onStartGame, onLeaveRoom }: LobbyProps) 
                 key={`empty-${i}`}
                 className="flex items-center p-3 bg-slate-700/50 rounded-lg border-2 border-dashed border-slate-600"
               >
-                <span className="text-slate-500">Waiting for player...</span>
+                <span className="text-slate-500">{t.waitingForPlayer}</span>
               </div>
             )
           )}
@@ -114,20 +116,20 @@ export function Lobby({ room, playerId, onStartGame, onLeaveRoom }: LobbyProps) 
               disabled={!canStart}
               className="w-full"
             >
-              {canStart ? 'Start Game' : `Need ${2 - room.gameState.players.length} more player(s)`}
+              {canStart ? t.startGame : t.needMorePlayers(2 - room.gameState.players.length)}
             </Button>
             <p className="text-xs text-slate-500 text-center">
-              As the host, only you can start the game
+              {t.hostCanStart}
             </p>
           </>
         ) : (
           <p className="text-center text-slate-400">
-            Waiting for host to start the game...
+            {t.waitingForHost}
           </p>
         )}
 
         <Button variant="danger" onClick={onLeaveRoom} className="w-full">
-          Leave Room
+          {t.leaveRoom}
         </Button>
       </div>
     </motion.div>

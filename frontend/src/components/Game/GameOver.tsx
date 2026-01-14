@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { GameState } from '@shared/types';
 import { Button } from '../UI/Button';
+import { useTranslation } from '../../i18n/useLanguage';
 
 interface GameOverProps {
   gameState: GameState;
@@ -23,6 +24,7 @@ export function GameOver({
   );
   const winner = sortedPlayers[0];
   const isWinner = winner.id === playerId;
+  const { t } = useTranslation();
 
   return (
     <motion.div
@@ -45,19 +47,19 @@ export function GameOver({
             {isWinner ? '🏆' : '🎮'}
           </motion.div>
           <h2 className="text-3xl font-bold mb-2">
-            {isWinner ? 'You Won!' : 'Game Over'}
+            {isWinner ? t.youWon : t.gameOver}
           </h2>
           <p className="text-slate-400">
             {isWinner
-              ? 'Congratulations on your victory!'
-              : `${winner.name} wins the game!`}
+              ? t.congratulations
+              : t.playerWins(winner.name)}
           </p>
         </div>
 
         {/* Final standings */}
         <div className="space-y-3 mb-6">
           <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
-            Final Scores
+            {t.finalScores}
           </h3>
           {sortedPlayers.map((player, index) => (
             <motion.div
@@ -82,7 +84,7 @@ export function GameOver({
                 <span className="font-medium">
                   {player.name}
                   {player.id === playerId && (
-                    <span className="text-blue-400 ml-2">(You)</span>
+                    <span className="text-blue-400 ml-2">({t.you})</span>
                   )}
                 </span>
               </div>
@@ -97,15 +99,15 @@ export function GameOver({
         <div className="space-y-3">
           {isHost ? (
             <Button variant="primary" onClick={onRestart} className="w-full">
-              Play Again
+              {t.playAgain}
             </Button>
           ) : (
             <p className="text-center text-slate-400 text-sm">
-              Waiting for host to restart...
+              {t.waitingForRestart}
             </p>
           )}
           <Button variant="ghost" onClick={onLeave} className="w-full">
-            Leave Room
+            {t.leaveRoom}
           </Button>
         </div>
       </motion.div>

@@ -5,6 +5,7 @@ import { PatternLines } from './PatternLines';
 import { Wall } from './Wall';
 import { FloorLine } from './FloorLine';
 import { getValidPatternLines } from '../../utils/gameHelpers';
+import { useTranslation } from '../../i18n/useLanguage';
 
 interface BoardProps {
   player: Player;
@@ -26,6 +27,7 @@ export function Board({
   myPlayerId,
 }: BoardProps) {
   const [selectedLine, setSelectedLine] = useState<number | null>(null);
+  const { t } = useTranslation();
 
   const canInteract = isCurrentPlayer && isMyBoard && selectedTiles !== null;
   const validLines = selectedTiles
@@ -91,8 +93,8 @@ export function Board({
           />
           <span className="font-semibold text-lg">
             {player.name}
-            {isMyBoard && ' (You)'}
-            {player.isHost && ' (Host)'}
+            {isMyBoard && ` (${t.you})`}
+            {player.isHost && ` (${t.host})`}
           </span>
         </div>
         <motion.div
@@ -101,7 +103,7 @@ export function Board({
           animate={{ scale: [1, 1.2, 1] }}
           className="text-2xl font-bold text-yellow-400"
         >
-          {player.board.score} pts
+          {player.board.score} {t.pts}
         </motion.div>
       </div>
 
@@ -110,7 +112,7 @@ export function Board({
         {/* Pattern lines */}
         <div className="flex-shrink-0">
           <h4 className="text-xs text-slate-500 mb-2 uppercase tracking-wide">
-            Pattern Lines
+            {t.patternLines}
           </h4>
           <PatternLines
             patternLines={player.board.patternLines}
@@ -125,7 +127,7 @@ export function Board({
         {/* Wall */}
         <div className="flex-shrink-0">
           <h4 className="text-xs text-slate-500 mb-2 uppercase tracking-wide">
-            Wall
+            {t.wall}
           </h4>
           <Wall wall={player.board.wall} />
         </div>
@@ -134,7 +136,7 @@ export function Board({
       {/* Floor line */}
       <div>
         <h4 className="text-xs text-slate-500 mb-1 uppercase tracking-wide mt-4">
-          Floor (Penalties)
+          {t.floorPenalties}
         </h4>
         <FloorLine
           floorLine={player.board.floorLine}
@@ -144,7 +146,7 @@ export function Board({
         />
         {canPlaceOnFloor && validLines.length === 0 && (
           <p className="text-xs text-yellow-400 mt-1">
-            No valid pattern lines - must place on floor
+            {t.noValidPatternLines}
           </p>
         )}
       </div>
@@ -158,10 +160,10 @@ export function Board({
         >
           {isMyBoard ? (
             <span className="text-green-400 font-semibold">
-              {selectedTiles ? 'Select where to place tiles' : 'Your turn - select tiles'}
+              {selectedTiles ? t.selectWherePlaceTiles : t.yourTurnSelectTiles}
             </span>
           ) : (
-            <span className="text-yellow-400">Playing...</span>
+            <span className="text-yellow-400">{t.playing}</span>
           )}
         </motion.div>
       )}

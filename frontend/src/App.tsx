@@ -9,6 +9,8 @@ import { GameBoard } from './components/Game/GameBoard';
 import { GameOver } from './components/Game/GameOver';
 import { Toast } from './components/UI/Toast';
 import { Button } from './components/UI/Button';
+import { LanguageSelector } from './components/UI/LanguageSelector';
+import { useTranslation } from './i18n/useLanguage';
 import { TileSelection } from '@shared/types';
 
 type Screen = 'home' | 'create' | 'join' | 'lobby' | 'game';
@@ -23,6 +25,8 @@ function App() {
 
   const { room, gameState, playerId, error, clearError, isConnected } =
     useGameStore();
+
+  const { t } = useTranslation();
 
   // Check for room ID in URL
   useEffect(() => {
@@ -81,10 +85,15 @@ function App() {
 
   return (
     <div className="min-h-screen">
+      {/* Language selector */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSelector />
+      </div>
+
       {/* Connection status */}
       {!isConnected && (
         <div className="fixed top-0 left-0 right-0 bg-red-600 text-white text-center py-2 z-50">
-          Connecting to server...
+          {t.connectingToServer}
         </div>
       )}
 
@@ -107,10 +116,10 @@ function App() {
               className="text-center mb-12"
             >
               <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                Azul Online
+                {t.title}
               </h1>
               <p className="text-xl text-slate-400">
-                Play the classic board game with friends
+                {t.subtitle}
               </p>
             </motion.div>
 
@@ -121,7 +130,7 @@ function App() {
                 onClick={() => setScreen('create')}
                 className="w-full"
               >
-                Create Room
+                {t.createRoom}
               </Button>
               <Button
                 variant="secondary"
@@ -129,13 +138,13 @@ function App() {
                 onClick={() => setScreen('join')}
                 className="w-full"
               >
-                Join Room
+                {t.joinRoom}
               </Button>
             </div>
 
             <div className="mt-12 text-center text-slate-500 text-sm">
-              <p>No account needed. Just share the room code!</p>
-              <p className="mt-2">2-4 players</p>
+              <p>{t.noAccountNeeded}</p>
+              <p className="mt-2">2-4 {t.players}</p>
             </div>
           </motion.div>
         )}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '../UI/Button';
+import { useTranslation } from '../../i18n/useLanguage';
 
 interface JoinRoomProps {
   onJoinRoom: (roomId: string, playerName: string) => void;
@@ -11,6 +12,7 @@ interface JoinRoomProps {
 export function JoinRoom({ onJoinRoom, onBack, initialRoomId = '' }: JoinRoomProps) {
   const [roomId, setRoomId] = useState(initialRoomId);
   const [playerName, setPlayerName] = useState('');
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (initialRoomId) {
@@ -31,18 +33,18 @@ export function JoinRoom({ onJoinRoom, onBack, initialRoomId = '' }: JoinRoomPro
       animate={{ opacity: 1, y: 0 }}
       className="bg-slate-800 rounded-xl p-8 w-full max-w-md"
     >
-      <h2 className="text-2xl font-bold mb-6 text-center">Join Room</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">{t.joinRoomTitle}</h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label className="block text-sm font-medium text-slate-300 mb-2">
-            Room Code
+            {t.roomCode}
           </label>
           <input
             type="text"
             value={roomId}
             onChange={(e) => setRoomId(e.target.value.toUpperCase())}
-            placeholder="Enter room code"
+            placeholder={t.enterRoomCode}
             maxLength={6}
             className="w-full px-4 py-3 bg-slate-700 rounded-lg border border-slate-600
                      focus:border-blue-500 focus:ring-1 focus:ring-blue-500
@@ -53,13 +55,13 @@ export function JoinRoom({ onJoinRoom, onBack, initialRoomId = '' }: JoinRoomPro
 
         <div>
           <label className="block text-sm font-medium text-slate-300 mb-2">
-            Your Name
+            {t.yourName}
           </label>
           <input
             type="text"
             value={playerName}
             onChange={(e) => setPlayerName(e.target.value)}
-            placeholder="Enter your name"
+            placeholder={t.enterYourName}
             maxLength={20}
             className="w-full px-4 py-3 bg-slate-700 rounded-lg border border-slate-600
                      focus:border-blue-500 focus:ring-1 focus:ring-blue-500
@@ -70,7 +72,7 @@ export function JoinRoom({ onJoinRoom, onBack, initialRoomId = '' }: JoinRoomPro
 
         <div className="flex gap-3 pt-4">
           <Button type="button" variant="ghost" onClick={onBack} className="flex-1">
-            Back
+            {t.back}
           </Button>
           <Button
             type="submit"
@@ -78,7 +80,7 @@ export function JoinRoom({ onJoinRoom, onBack, initialRoomId = '' }: JoinRoomPro
             disabled={!roomId.trim() || !playerName.trim()}
             className="flex-1"
           >
-            Join Room
+            {t.joinRoom}
           </Button>
         </div>
       </form>

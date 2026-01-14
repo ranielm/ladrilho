@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { GameState, TileSelection, PlayerMove } from '@shared/types';
 import { Board } from '../Board/Board';
 import { FactoryDisplay } from '../Factory/FactoryDisplay';
+import { useTranslation } from '../../i18n/useLanguage';
 
 interface GameBoardProps {
   gameState: GameState;
@@ -23,13 +24,14 @@ export function GameBoard({
 }: GameBoardProps) {
   const currentPlayer = gameState.players[gameState.currentPlayerIndex];
   const isMyTurn = currentPlayer?.id === playerId;
+  const { t } = useTranslation();
 
   return (
     <div className="container mx-auto px-4 py-6">
       {/* Game info header */}
       <div className="text-center mb-6">
         <h2 className="text-xl font-semibold mb-2">
-          Round {gameState.round}
+          {t.round} {gameState.round}
         </h2>
         <motion.p
           key={currentPlayer?.id}
@@ -37,7 +39,7 @@ export function GameBoard({
           animate={{ opacity: 1 }}
           className={`text-lg ${isMyTurn ? 'text-green-400' : 'text-slate-400'}`}
         >
-          {isMyTurn ? "It's your turn!" : `${currentPlayer?.name}'s turn`}
+          {isMyTurn ? t.yourTurn : t.playerTurn(currentPlayer?.name || '')}
         </motion.p>
       </div>
 
@@ -79,19 +81,19 @@ export function GameBoard({
                 className="mt-4 p-3 bg-yellow-600/20 border border-yellow-600 rounded-lg text-center"
               >
                 <p className="text-yellow-400 text-sm">
-                  Selected: <span className="font-semibold capitalize">{selectedTiles.color}</span>
-                  {' '}tiles from{' '}
+                  {t.selected}: <span className="font-semibold capitalize">{selectedTiles.color}</span>
+                  {' '}{t.tiles} {t.from}{' '}
                   <span className="font-semibold">
                     {selectedTiles.source === 'factory'
-                      ? `Factory ${(selectedTiles.factoryIndex ?? 0) + 1}`
-                      : 'Center'}
+                      ? `${t.factory} ${(selectedTiles.factoryIndex ?? 0) + 1}`
+                      : t.center}
                   </span>
                 </p>
                 <button
                   onClick={onClearSelection}
                   className="text-xs text-yellow-400/70 hover:text-yellow-400 mt-1 underline"
                 >
-                  Cancel selection
+                  {t.cancelSelection}
                 </button>
               </motion.div>
             )}

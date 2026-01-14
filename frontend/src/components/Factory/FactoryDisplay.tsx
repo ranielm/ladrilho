@@ -2,6 +2,7 @@ import React from 'react';
 import { Factory as FactoryType, TileSelection, CenterPool as CenterPoolType } from '@shared/types';
 import { Factory } from './Factory';
 import { CenterPool } from './CenterPool';
+import { useTranslation } from '../../i18n/useLanguage';
 
 interface FactoryDisplayProps {
   factories: FactoryType[];
@@ -18,11 +19,13 @@ export function FactoryDisplay({
   selectedTiles,
   disabled = false,
 }: FactoryDisplayProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-6">
       <div>
         <h3 className="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wide">
-          Factories
+          {t.factories}
         </h3>
         <div className="flex flex-wrap gap-4 justify-center">
           {factories.map((factory, index) => (
@@ -40,7 +43,7 @@ export function FactoryDisplay({
 
       <div>
         <h3 className="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wide">
-          Center
+          {t.center}
         </h3>
         <CenterPool
           centerPool={centerPool}

@@ -46,3 +46,28 @@ Fixed Vite build errors caused by incorrect relative import paths in frontend co
 ## Summary:
 
 Fixed a bug where the host would see a black screen when a second player joined the room. The issue was that the Zustand store's setRoom and setGameState functions only accepted direct values, but the useSocket hook was passing functional updates when handling the onPlayerJoined event. The store now properly detects when a function is passed and calls it with the previous state, enabling proper state updates when players join or leave.
+
+---
+
+# AZUL-ONLINE: i18n Support & Tile Color Improvements
+
+**Date:** 2026-01-14
+
+## Changes:
+
+- `frontend/src/i18n/translations.ts`: Translation strings for PT-BR and EN-US
+- `frontend/src/i18n/useLanguage.ts`: Zustand store with localStorage persistence for language preference
+- `frontend/src/components/UI/LanguageSelector.tsx`: Language toggle component (PT/EN)
+- `frontend/src/App.tsx`: Added LanguageSelector and translations
+- `frontend/src/components/Room/CreateRoom.tsx`: Translated all UI strings
+- `frontend/src/components/Room/JoinRoom.tsx`: Translated all UI strings
+- `frontend/src/components/Room/Lobby.tsx`: Translated all UI strings
+- `frontend/src/components/Game/GameBoard.tsx`: Translated all UI strings
+- `frontend/src/components/Game/GameOver.tsx`: Translated all UI strings
+- `frontend/src/components/Board/Board.tsx`: Translated all UI strings
+- `frontend/src/components/Factory/FactoryDisplay.tsx`: Translated all UI strings
+- `frontend/src/styles/globals.css`: Adjusted tile colors for better saturation and visibility
+
+## Summary:
+
+Added internationalization (i18n) support with Portuguese (PT-BR) and English (EN-US) languages. The language selector appears in the top-right corner of all screens and the preference is persisted in localStorage. All user-facing strings across the application are now translatable. Also improved tile colors to be more saturated and visually distinct while maintaining a professional appearance without excessive glow effects.
