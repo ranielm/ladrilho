@@ -130,3 +130,21 @@ Fixed mobile touch events where users could select tiles from factories but coul
 ## Summary:
 
 Implemented game state persistence using SQLite (better-sqlite3) so players can close their browser and return to continue their game later. The server auto-saves room state to the database on every action (room creation, player join/leave, game moves). On server startup, all persisted rooms are loaded back into memory with players marked as disconnected. Frontend now uses localStorage instead of sessionStorage so reconnection data survives browser restarts. Rooms are automatically cleaned up after 48 hours of inactivity. To configure the database path on Render.com, set the `DB_PATH` environment variable (e.g., `/var/data/azul.db`).
+
+---
+
+# AZUL-ONLINE: Migrate to Turso Cloud Database
+
+**Date:** 2026-01-14
+
+## Changes:
+
+- `backend/src/persistence/database.ts`: Migrated from better-sqlite3 to @libsql/client for Turso cloud SQLite
+- `backend/src/room/store.ts`: Updated to use async database operations with fire-and-forget pattern
+- `backend/src/server.ts`: Made createServer async to await database initialization
+- `backend/src/index.ts`: Added async main function wrapper for server startup
+- `backend/package.json`: Replaced better-sqlite3 with @libsql/client
+
+## Summary:
+
+Migrated from local SQLite (better-sqlite3) to Turso cloud database (@libsql/client) because Render.com free tier doesn't support persistent disks. Turso provides free cloud-hosted SQLite that persists across server restarts and deploys. The database operations are now async but use fire-and-forget pattern for writes to avoid blocking game actions. Configuration requires two environment variables on Render: `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN`. The system gracefully falls back to in-memory only mode if Turso credentials are not configured.
