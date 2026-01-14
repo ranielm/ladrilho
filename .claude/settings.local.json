@@ -12,7 +12,8 @@
       "Bash(npm run dev:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat\\(frontend\\): add i18n support with PT-BR and EN-US languages\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git commit:*)",
-      "Bash(vercel --version:*)"
+      "Bash(vercel --version:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '../../i18n/useLanguage';
 import { useAuthStore } from '../../store/authStore';
 import { AvatarUpload } from './AvatarUpload';
+import { PasswordInput } from '../UI/PasswordInput';
 
 interface SignUpFormProps {
   onSwitchToLogin: () => void;
@@ -106,38 +107,22 @@ export function SignUpForm({ onSwitchToLogin, onSuccess }: SignUpFormProps) {
               />
             </div>
 
-            <div>
-              <label className="block text-sm text-slate-400 mb-1">
-                {t.password}
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700
-                           text-white placeholder-slate-500 focus:outline-none focus:border-blue-500
-                           transition-colors"
-                placeholder="••••••••"
-                required
-                minLength={6}
-              />
-            </div>
+            <PasswordInput
+              label={t.password}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+              minLength={6}
+            />
 
-            <div>
-              <label className="block text-sm text-slate-400 mb-1">
-                {t.confirmPassword}
-              </label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700
-                           text-white placeholder-slate-500 focus:outline-none focus:border-blue-500
-                           transition-colors"
-                placeholder="••••••••"
-                required
-              />
-            </div>
+            <PasswordInput
+              label={t.confirmPassword}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+            />
 
             {error && (
               <motion.p
