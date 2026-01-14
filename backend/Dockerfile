@@ -1,33 +1,24 @@
-# Base stage
-FROM node:20-alpine AS base
+FROM node:20-alpine
+
 WORKDIR /app
 
-# Development stage
-FROM base AS development
-COPY backend/package*.json ./
-RUN npm install
-COPY packages ./packages
-COPY backend/src ./src
-COPY backend/tsconfig.json ./
-EXPOSE 3001
-CMD ["npm", "run", "dev"]
+# Copy package files
+COPY package*.json ./
 
-# Build stage
-FROM base AS build
-COPY backend/package*.json ./
+# Install all dependencies (including dev for build)
 RUN npm ci
-COPY packages ./packages
-COPY backend/src ./src
-COPY backend/tsconfig.json ./
+
+# Copy source code
+COPY . .
+
+# Build TypeScript
 RUN npm run build
 
-# Production stage
-FROM base AS production
-ENV NODE_ENV=production
-COPY backend/package*.json ./
-RUN npm ci --only=production
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/packages ./packages
+# Remove dev dependencies
+RUN npm prune --production
+
+# Expose port
 EXPOSE 3001
-USER node
-CMD ["node", "dist/index.js"]
+
+# Start the server
+CMD ["npm", "start"]
