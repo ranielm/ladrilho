@@ -106,10 +106,9 @@ Major UI/UX improvements including a complete landing page redesign with "Modern
 
 ## Changes:
 
-- `frontend/src/components/Board/PatternLines.tsx`: Added onTouchEnd handler, touchAction: manipulation style, increased min-height to 44px
-- `frontend/src/components/Board/FloorLine.tsx`: Added onTouchEnd handler, touchAction: manipulation style, increased min-height to 44px
-- `frontend/src/components/Tile/Tile.tsx`: Added onTouchEnd handler, touchAction: manipulation style for better mobile support
+- `frontend/src/components/Board/PatternLines.tsx`: Replaced motion.div with regular div, switched onClick/onTouchEnd to onPointerUp for cross-platform touch support
+- `frontend/src/components/Board/FloorLine.tsx`: Replaced motion.div with regular div, switched onClick/onTouchEnd to onPointerUp for cross-platform touch support
 
 ## Summary:
 
-Fixed mobile touch events where users could select tiles from factories but could not place them on pattern lines by tapping. The issue was that onClick handlers were not reliably triggered on mobile touch devices. Added onTouchEnd handlers with e.preventDefault() to all interactive elements (PatternLines, FloorLine, Tile) to ensure touch events are properly captured. Applied touchAction: 'manipulation' CSS to eliminate 300ms tap delay and prevent double-tap zoom. Increased minimum touch target heights to 44px following mobile accessibility guidelines.
+Fixed mobile touch events where users could select tiles from factories but could not place them on pattern lines by tapping. The issue was that Framer Motion's motion.div with onTouchEnd was not properly firing events on some mobile browsers. Replaced motion.div with regular div elements and switched to onPointerUp events which provide unified mouse and touch handling across all platforms. Added e.stopPropagation() to prevent event bubbling issues.
