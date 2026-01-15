@@ -148,3 +148,30 @@ Implemented game state persistence using SQLite (better-sqlite3) so players can 
 ## Summary:
 
 Migrated from local SQLite (better-sqlite3) to Turso cloud database (@libsql/client) because Render.com free tier doesn't support persistent disks. Turso provides free cloud-hosted SQLite that persists across server restarts and deploys. The database operations are now async but use fire-and-forget pattern for writes to avoid blocking game actions. Configuration requires two environment variables on Render: `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN`. The system gracefully falls back to in-memory only mode if Turso credentials are not configured.
+
+---
+
+# AZUL-ONLINE: Game Features & UX Improvements
+
+**Date:** 2026-01-15
+
+## Changes:
+
+- `backend/src/shared/types.ts`: Added ChangeRoomCodePayload type
+- `backend/src/room/store.ts`: Added changeRoomId function for room code changes
+- `backend/src/room/manager.ts`: Added changeRoomCode function with validation
+- `backend/src/socket/handlers.ts`: Added room:change-code socket event handler
+- `frontend/src/services/socket.ts`: Improved reconnection with infinite retries, added reattachListeners and tryAutoReconnect
+- `frontend/src/hooks/useSocket.ts`: Added changeRoomCode function
+- `frontend/src/components/Room/Lobby.tsx`: Added change room code modal for host
+- `frontend/src/components/Game/PenaltyNotification.tsx`: New component for floor penalty notifications
+- `frontend/src/components/Game/RoundSummary.tsx`: New component for round score breakdown modal
+- `frontend/src/components/Game/GameRules.tsx`: New component with illustrated game tutorial
+- `frontend/src/components/Game/GameControls.tsx`: Added help/rules button
+- `frontend/src/components/Game/GameBoard.tsx`: Integrated PenaltyNotifications and RoundSummary
+- `frontend/src/components/Landing/LandingPage.tsx`: Added rules button and GameRules modal
+- `frontend/src/i18n/translations.ts`: Added translations for room code, penalties, round summary, and rules
+
+## Summary:
+
+Implemented five major features: (1) Host can change room code in lobby with validation for 6 alphanumeric characters; (2) Fixed mobile sync bug where host didn't see players joining by improving socket reconnection with infinite retries and auto-reconnect on disconnect; (3) Penalty notifications appear as toast messages when tiles go to floor line or first player marker is taken; (4) Round summary modal shows detailed score breakdown (tiles placed, adjacency bonus, floor penalty) after each round completes; (5) Comprehensive game rules/tutorial section accessible from landing page and during gameplay with illustrated step-by-step instructions, scoring rules, and end game conditions in both PT-BR and EN-US.
