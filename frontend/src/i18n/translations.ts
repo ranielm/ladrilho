@@ -126,6 +126,17 @@ export const translations = {
     penaltyFirstPlayer: (name: string) =>
       `${name} pegou o marcador de primeiro jogador (-1)`,
     penalty: 'Penalidade',
+
+    // Round Summary
+    roundSummary: 'Resumo da Rodada',
+    roundComplete: (n: number) => `Rodada ${n} Completa!`,
+    tilesPlaced: 'Peças na Parede',
+    wallBonus: 'Bônus de Adjacência',
+    floorPenalty: 'Penalidade do Chão',
+    roundPoints: 'Pontos da Rodada',
+    totalScore: 'Pontuação Total',
+    continueGame: 'Continuar',
+    nextRound: (n: number) => `Próxima: Rodada ${n}`,
   },
   'en-US': {
     // Home
@@ -252,6 +263,17 @@ export const translations = {
     penaltyFirstPlayer: (name: string) =>
       `${name} took the first player marker (-1)`,
     penalty: 'Penalty',
+
+    // Round Summary
+    roundSummary: 'Round Summary',
+    roundComplete: (n: number) => `Round ${n} Complete!`,
+    tilesPlaced: 'Tiles on Wall',
+    wallBonus: 'Adjacency Bonus',
+    floorPenalty: 'Floor Penalty',
+    roundPoints: 'Round Points',
+    totalScore: 'Total Score',
+    continueGame: 'Continue',
+    nextRound: (n: number) => `Next: Round ${n}`,
   },
 } as const;
 

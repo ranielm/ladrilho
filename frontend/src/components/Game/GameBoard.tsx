@@ -5,6 +5,7 @@ import { Board } from '../Board/Board';
 import { FactoryDisplay } from '../Factory/FactoryDisplay';
 import { GameControls } from './GameControls';
 import { PenaltyNotifications } from './PenaltyNotification';
+import { RoundSummary } from './RoundSummary';
 import { useTranslation } from '../../i18n/useLanguage';
 
 interface GameBoardProps {
@@ -118,6 +119,9 @@ export function GameBoard({
 
       {/* Penalty Notifications */}
       <PenaltyNotifications gameState={gameState} players={gameState.players} />
+
+      {/* Round Summary Modal */}
+      <RoundSummary gameState={gameState} playerId={playerId} />
     </div>
   );
 }
