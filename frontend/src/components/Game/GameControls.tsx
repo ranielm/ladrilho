@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '../../i18n/useLanguage';
 import { ConfirmModal } from '../UI/ConfirmModal';
+import { GameRules } from './GameRules';
 
 interface GameControlsProps {
   onLeaveGame: () => void;
@@ -11,6 +12,7 @@ export function GameControls({ onLeaveGame }: GameControlsProps) {
   const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [showRules, setShowRules] = useState(false);
 
   // Track fullscreen state
   useEffect(() => {
@@ -56,6 +58,30 @@ export function GameControls({ onLeaveGame }: GameControlsProps) {
         animate={{ opacity: 1, y: 0 }}
         className="fixed top-4 right-32 z-40 flex gap-2"
       >
+        {/* Rules/Help Button */}
+        <motion.button
+          whileHover={{ y: -2, boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)' }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setShowRules(true)}
+          className="glass-card p-3 rounded-lg transition-all duration-200 group
+                     hover:border-blue-500/50"
+          title={t.rules}
+        >
+          <svg
+            className="w-5 h-5 text-tile-white group-hover:text-blue-400 transition-colors"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </motion.button>
+
         {/* Fullscreen Toggle */}
         <motion.button
           whileHover={{ y: -2, boxShadow: '0 4px 12px rgba(232, 241, 242, 0.2)' }}
@@ -133,6 +159,9 @@ export function GameControls({ onLeaveGame }: GameControlsProps) {
         onCancel={handleCancelLeave}
         variant="danger"
       />
+
+      {/* Game Rules Modal */}
+      <GameRules isOpen={showRules} onClose={() => setShowRules(false)} />
     </>
   );
 }

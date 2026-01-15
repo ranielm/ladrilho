@@ -4,6 +4,7 @@ import { useTranslation } from '../../i18n/useLanguage';
 import { LoginForm } from '../Auth/LoginForm';
 import { SignUpForm } from '../Auth/SignUpForm';
 import { useAuthStore } from '../../store/authStore';
+import { GameRules } from '../Game/GameRules';
 
 interface LandingPageProps {
   onCreateRoom: () => void;
@@ -20,6 +21,7 @@ export function LandingPage({ onCreateRoom, onJoinRoom }: LandingPageProps) {
   const [activeTab, setActiveTab] = useState<Tab>('quickPlay');
   const [authMode, setAuthMode] = useState<AuthMode>('login');
   const [nickname, setNickname] = useState(guestName);
+  const [showRules, setShowRules] = useState(false);
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
@@ -348,18 +350,28 @@ export function LandingPage({ onCreateRoom, onJoinRoom }: LandingPageProps) {
           )}
         </AnimatePresence>
 
-        {/* Version info */}
+        {/* Rules Button & Version info */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
           className="mt-6 text-center border-t border-slate-700/50 pt-4"
         >
+          <button
+            onClick={() => setShowRules(true)}
+            className="text-slate-400 hover:text-blue-400 text-sm transition-colors flex items-center gap-2 mx-auto mb-3"
+          >
+            <span>📖</span>
+            {t.rules}
+          </button>
           <p className="text-slate-600 text-xs">
             v{__APP_VERSION__} • Build {new Date(__BUILD_TIME__).toLocaleDateString('pt-BR')}
           </p>
         </motion.div>
       </motion.div>
+
+      {/* Game Rules Modal */}
+      <GameRules isOpen={showRules} onClose={() => setShowRules(false)} />
     </div>
   );
 }
