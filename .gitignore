@@ -47,9 +47,3 @@ Thumbs.db
 tmp/
 temp/
 tmpclaude-*
-
-# SQLite database
-data/
-*.db
-*.db-wal
-*.db-shm
