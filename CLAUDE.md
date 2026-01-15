@@ -175,3 +175,17 @@ Migrated from local SQLite (better-sqlite3) to Turso cloud database (@libsql/cli
 ## Summary:
 
 Implemented five major features: (1) Host can change room code in lobby with validation for 6 alphanumeric characters; (2) Fixed mobile sync bug where host didn't see players joining by improving socket reconnection with infinite retries and auto-reconnect on disconnect; (3) Penalty notifications appear as toast messages when tiles go to floor line or first player marker is taken; (4) Round summary modal shows detailed score breakdown (tiles placed, adjacency bonus, floor penalty) after each round completes; (5) Comprehensive game rules/tutorial section accessible from landing page and during gameplay with illustrated step-by-step instructions, scoring rules, and end game conditions in both PT-BR and EN-US.
+
+---
+
+# AZUL-ONLINE: Fix Render.com Build Configuration
+
+**Date:** 2026-01-15
+
+## Changes:
+
+- `backend/package.json`: Added render-build script for Render.com deployment
+
+## Summary:
+
+Fixed Render.com deployment build failure where the server was trying to run `node dist/index.js` without first compiling TypeScript. Added a `render-build` script to package.json and configured Render's Build Command to `npm install && npm run build` so TypeScript is compiled before the start command runs. The dist/ folder is now properly generated during the build phase.
