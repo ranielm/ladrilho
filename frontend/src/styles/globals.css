@@ -111,6 +111,31 @@ body {
   @apply flex justify-end gap-1;
 }
 
+/* Board alignment styles for perfect pattern line and wall alignment */
+.board-layout {
+  @apply flex flex-col;
+}
+
+.pattern-lines-container,
+.wall-container {
+  @apply flex flex-col gap-1;
+}
+
+/* Ensure pattern lines and wall rows have identical heights */
+.pattern-line,
+.wall-row {
+  height: 28px;
+  @apply flex items-center;
+}
+
+.pattern-line {
+  @apply justify-end gap-1 px-2;
+}
+
+.wall-row {
+  @apply justify-start gap-1;
+}
+
 .wall-cell {
   @apply w-8 h-8 rounded-sm bg-slate-800/50;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
