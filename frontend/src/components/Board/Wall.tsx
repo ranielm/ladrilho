@@ -9,9 +9,9 @@ interface WallProps {
 
 export function Wall({ wall }: WallProps) {
   return (
-    <div className="grid gap-1">
+    <div className="flex flex-col gap-1">
       {wall.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex gap-1">
+        <div key={rowIndex} className="wall-row flex gap-1 h-[28px] items-center">
           {row.map((cell, colIndex) => (
             <motion.div
               key={`${rowIndex}-${colIndex}`}

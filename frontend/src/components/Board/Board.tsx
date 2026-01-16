@@ -107,29 +107,34 @@ export function Board({
         </motion.div>
       </div>
 
-      {/* Board content */}
-      <div className="flex gap-4">
-        {/* Pattern lines */}
-        <div className="flex-shrink-0">
-          <h4 className="text-xs text-slate-500 mb-2 uppercase tracking-wide">
+      {/* Board content - Perfect alignment with CSS Grid */}
+      <div className="board-layout">
+        {/* Headers */}
+        <div className="grid grid-cols-[auto_auto] gap-4 mb-2">
+          <h4 className="text-xs text-slate-500 uppercase tracking-wide">
             {t.patternLines}
           </h4>
-          <PatternLines
-            patternLines={player.board.patternLines}
-            wall={player.board.wall}
-            selectedColor={canInteract ? selectedTiles?.color || null : null}
-            onSelectLine={handleSelectLine}
-            selectedLine={selectedLine}
-            disabled={!canInteract}
-          />
-        </div>
-
-        {/* Wall */}
-        <div className="flex-shrink-0">
-          <h4 className="text-xs text-slate-500 mb-2 uppercase tracking-wide">
+          <h4 className="text-xs text-slate-500 uppercase tracking-wide">
             {t.wall}
           </h4>
-          <Wall wall={player.board.wall} />
+        </div>
+        
+        {/* Game board - Pattern lines and Wall aligned */}
+        <div className="grid grid-cols-[auto_auto] gap-4 items-start">
+          <div className="pattern-lines-container">
+            <PatternLines
+              patternLines={player.board.patternLines}
+              wall={player.board.wall}
+              selectedColor={canInteract ? selectedTiles?.color || null : null}
+              onSelectLine={handleSelectLine}
+              selectedLine={selectedLine}
+              disabled={!canInteract}
+            />
+          </div>
+          
+          <div className="wall-container">
+            <Wall wall={player.board.wall} />
+          </div>
         </div>
       </div>
 
