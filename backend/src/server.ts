@@ -48,7 +48,7 @@ export async function createServer() {
   };
 
   // Auth.js Middleware
-  app.use("/api/auth/*", ExpressAuth(authConfig));
+  app.use("/api/auth", ExpressAuth(authConfig));
 
   app.use(cors(corsOptions));
   app.use(express.json());
