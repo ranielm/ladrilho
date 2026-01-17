@@ -2,6 +2,7 @@ services:
   - type: web
     name: azul-online-backend
     env: node
+    rootDir: backend
     region: oregon
     plan: free
     buildCommand: npm install && npm run build
