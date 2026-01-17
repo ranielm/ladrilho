@@ -26,6 +26,14 @@ function LibSQLAdapter() {
             const rs = await db.execute({ sql: `SELECT * FROM users WHERE email = ?`, args: [email] });
             return rs.rows[0] as any || null;
         },
+        async updateUser(user: any) {
+            if (!db) throw new Error("Database not initialized");
+            await db.execute({
+                sql: `UPDATE users SET name = ?, email = ?, emailVerified = ?, image = ? WHERE id = ?`,
+                args: [user.name, user.email, user.emailVerified, user.image, user.id]
+            });
+            return user;
+        },
         async getUserByAccount({ provider, providerAccountId }: any) {
             if (!db) return null;
             const rs = await db.execute({
