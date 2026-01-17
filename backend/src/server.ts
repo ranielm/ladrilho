@@ -16,8 +16,12 @@ export async function createServer() {
   const app = express();
   const httpServer = createHttpServer(app);
 
+  // Trust proxy is required for Render (and other platforms behind load balancers)
+  // to correctly detect the protocol (https) and client IP
+  app.set('trust proxy', true);
+
   // Support multiple CORS origins (comma-separated in env var)
-  const corsOriginEnv = process.env.CORS_ORIGIN || 'http://localhost:5173';
+  const corsOriginEnv = process.env.CORS_ORIGIN || process.env.FRONTEND_URL || 'http://localhost:5173';
   const corsOrigins = corsOriginEnv.split(',').map((origin) => origin.trim());
 
   // CORS configuration for production
@@ -47,11 +51,11 @@ export async function createServer() {
     credentials: true,
   };
 
-  // Auth.js Middleware
-  app.use("/api/auth", ExpressAuth(authConfig));
-
   app.use(cors(corsOptions));
   app.use(express.json());
+
+  // Auth.js Middleware
+  app.use("/api/auth/*", ExpressAuth(authConfig));
 
   // Health check endpoint
   app.get('/api/health', (req, res) => {
