@@ -32,7 +32,10 @@ export function LandingPage({ onCreateRoom, onJoinRoom }: LandingPageProps) {
 
   const handleLogin = (provider: 'google' | 'github') => {
     const apiUrl = import.meta.env.VITE_API_URL || '';
-    window.location.href = `${apiUrl}/api/auth/signin/${provider}`;
+    const targetUrl = `${apiUrl}/api/auth/signin/${provider}`;
+    console.log(`[LandingPage] Initiating login for provider: ${provider}`);
+    console.log(`[LandingPage] Redirecting to: ${targetUrl}`);
+    window.location.href = targetUrl;
   };
 
   return (

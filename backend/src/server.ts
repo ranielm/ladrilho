@@ -57,14 +57,30 @@ export async function createServer() {
   // Debug Middleware for Auth
   app.use("/api/auth", (req, res, next) => {
     console.log("DEBUG: Auth Request", {
+      method: req.method, // Added method logging
       originalUrl: req.originalUrl,
       baseUrl: req.baseUrl,
       path: req.path,
       url: req.url,
       params: req.params,
+      query: req.query, // Added query logging
       host: req.get('host'),
-      protocol: req.protocol
+      protocol: req.protocol,
+      // Be careful not to log full headers if they contain cookies with secrets
+      // defaulting to logging keys or specific safe headers
+      headers: {
+        'content-type': req.get('content-type'),
+        'origin': req.get('origin'),
+        'referer': req.get('referer'),
+        'host': req.get('host'),
+      }
     });
+
+    // Log body if present (for POST requests)
+    if (req.body && Object.keys(req.body).length > 0) {
+      console.log("DEBUG: Auth Request Body:", JSON.stringify(req.body, null, 2));
+    }
+
     next();
   });
 

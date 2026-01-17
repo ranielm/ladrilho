@@ -85,6 +85,15 @@ function LibSQLAdapter() {
     };
 }
 
+console.log("DEBUG: Initializing Auth Config");
+console.log("DEBUG: Env Check", {
+    AUTH_SECRET: !!process.env.AUTH_SECRET,
+    AUTH_GOOGLE_ID: !!process.env.AUTH_GOOGLE_ID,
+    AUTH_GOOGLE_SECRET: !!process.env.AUTH_GOOGLE_SECRET ? "Set (length: " + process.env.AUTH_GOOGLE_SECRET.length + ")" : "Missing",
+    AUTH_GITHUB_ID: !!process.env.AUTH_GITHUB_ID,
+    AUTH_GITHUB_SECRET: !!process.env.AUTH_GITHUB_SECRET ? "Set (length: " + process.env.AUTH_GITHUB_SECRET.length + ")" : "Missing",
+});
+
 export const authConfig = {
     providers: [
         Google({

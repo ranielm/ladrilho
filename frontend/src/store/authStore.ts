@@ -37,7 +37,9 @@ export const useAuthStore = create<AuthStore>()(
         set({ isLoading: true });
         try {
           const res = await fetch(`${API_URL}/api/auth/session`, { credentials: 'include' });
+          console.log('[AuthStore] Session check status:', res.status, res.statusText);
           const session = await res.json();
+          console.log('[AuthStore] Session data:', session);
           if (session && session.user) {
             // Map Auth.js user to our internal User format
             // Ensure username is populated (fallback to name or email part)
