@@ -1,0 +1,14 @@
+{
+    "name": "azul-online-root",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "test": "npx playwright test"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.41.1",
+        "@types/node": "^20.11.5",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.3.3"
+    }
+}

@@ -99,14 +99,45 @@ export const authConfig = {
         Google({
             clientId: process.env.AUTH_GOOGLE_ID,
             clientSecret: process.env.AUTH_GOOGLE_SECRET,
+            allowDangerousEmailAccountLinking: true,
         }),
         GitHub({
             clientId: process.env.AUTH_GITHUB_ID,
             clientSecret: process.env.AUTH_GITHUB_SECRET,
+            allowDangerousEmailAccountLinking: true,
         }),
     ],
     adapter: LibSQLAdapter(),
     secret: process.env.AUTH_SECRET,
     trustHost: true,
     basePath: '/api/auth',
+    debug: true,
+    callbacks: {
+        async signIn({ user, account, profile }: any) {
+            console.log("AUTH CALLBACK: SIGNIN ATTEMPT", {
+                provider: account?.provider,
+                email: user?.email,
+                accountId: account?.providerAccountId,
+                userExists: !!user?.id
+            });
+            return true;
+        },
+        async jwt({ token, user, account }: any) {
+            if (account) {
+                console.log("AUTH CALLBACK: JWT (New Signin)", {
+                    provider: account.provider,
+                    sub: token.sub
+                });
+            }
+            return token;
+        },
+        async session({ session, token }: any) {
+            // Be verbose but safe - don't log full tokens if avoiding leaks
+            console.log("AUTH CALLBACK: SESSION", {
+                userId: session?.user?.id,
+                sessionToken: !!token
+            });
+            return session;
+        },
+    },
 };

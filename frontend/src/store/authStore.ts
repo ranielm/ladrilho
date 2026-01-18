@@ -34,12 +34,15 @@ export const useAuthStore = create<AuthStore>()(
       activeGameId: null,
 
       checkSession: async () => {
+        console.log('[AuthStore] Session state: loading');
         set({ isLoading: true });
         try {
           const res = await fetch(`${API_URL}/api/auth/session`, { credentials: 'include' });
           console.log('[AuthStore] Session check status:', res.status, res.statusText);
           const session = await res.json();
-          console.log('[AuthStore] Session data:', session);
+          // Debug log the raw session object
+          console.log('[AuthStore] Session data received:', session);
+
           if (session && session.user) {
             // Map Auth.js user to our internal User format
             // Ensure username is populated (fallback to name or email part)
@@ -60,12 +63,14 @@ export const useAuthStore = create<AuthStore>()(
               console.error("Failed to check active game", e);
             }
 
+            console.log('[AuthStore] Session state: authenticated', { userId: user.id });
             set({ user, isAuthenticated: true, isLoading: false, activeGameId });
           } else {
+            console.log('[AuthStore] Session state: unauthenticated');
             set({ user: null, isAuthenticated: false, isLoading: false });
           }
         } catch (error) {
-          console.error('Failed to check session', error);
+          console.error('[AuthStore] Session state: error', error);
           set({ user: null, isAuthenticated: false, isLoading: false });
         }
       },

@@ -19,10 +19,37 @@ export function LandingPage({ onCreateRoom, onJoinRoom }: LandingPageProps) {
   const [activeTab, setActiveTab] = useState<Tab>('quickPlay');
   const [nickname, setNickname] = useState(guestName);
   const [showRules, setShowRules] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
-  // Check for existing session on mount
+  // Map OAuth errors to user-friendly messages
+  const AUTH_ERROR_MESSAGES: Record<string, string> = {
+    'OAuthAccountNotLinked': 'An account with this email already exists with a different provider. Please sign in with the original provider.',
+    'MissingCSRF': 'Security token missing or expired. Please try again.',
+    'Configuration': 'Server configuration error. Please contact support.',
+    'AccessDenied': 'Access denied. You do not have permission to sign in.',
+    'Verification': 'The verification link was invalid or has expired.',
+    'Default': 'An unknown authentication error occurred.'
+  };
+
+  // Check for existing session on mount and handle errors
   React.useEffect(() => {
     checkSession();
+
+    // Check for OAuth errors in URL
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get('error');
+
+    if (error) {
+      console.error('[LandingPage] OAuth error detected:', error);
+      const message = AUTH_ERROR_MESSAGES[error] || `Authentication failed: ${error}`;
+      setAuthError(message);
+
+      // Select auth tab to show the error context
+      setActiveTab('auth');
+
+      // Clean URL without refresh
+      window.history.replaceState({}, '', window.location.pathname);
+    }
   }, [checkSession]);
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -230,6 +257,12 @@ export function LandingPage({ onCreateRoom, onJoinRoom }: LandingPageProps) {
                 </div>
               ) : (
                 <div className="flex flex-col gap-4 py-4">
+                  {authError && (
+                    <div className="p-3 rounded-lg bg-red-500/20 border border-red-500/40 text-red-200 text-sm text-center mb-2">
+                      {authError}
+                    </div>
+                  )}
+
                   <button
                     onClick={() => handleLogin('google')}
                     className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-lg bg-white text-slate-900 font-semibold hover:bg-slate-100 transition-colors"
