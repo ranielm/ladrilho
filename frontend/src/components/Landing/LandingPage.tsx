@@ -62,7 +62,7 @@ export function LandingPage({ onCreateRoom, onJoinRoom }: LandingPageProps) {
 
     try {
       // 1. Get CSRF Token
-      const res = await fetch(`${apiUrl}/api/auth/csrf`);
+      const res = await fetch(`${apiUrl}/api/auth/csrf`, { credentials: 'include' });
       const data = await res.json();
       const csrfToken = data.csrfToken;
 
