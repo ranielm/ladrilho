@@ -30,12 +30,45 @@ export function LandingPage({ onCreateRoom, onJoinRoom }: LandingPageProps) {
     setGuestName(e.target.value);
   };
 
-  const handleLogin = (provider: 'google' | 'github') => {
+  const handleLogin = async (provider: 'google' | 'github') => {
     const apiUrl = import.meta.env.VITE_API_URL || '';
-    const targetUrl = `${apiUrl}/api/auth/signin/${provider}`;
-    console.log(`[LandingPage] Initiating login for provider: ${provider}`);
-    console.log(`[LandingPage] Redirecting to: ${targetUrl}`);
-    window.location.href = targetUrl;
+
+    try {
+      // 1. Get CSRF Token
+      const res = await fetch(`${apiUrl}/api/auth/csrf`);
+      const data = await res.json();
+      const csrfToken = data.csrfToken;
+
+      if (!csrfToken) {
+        console.error("Failed to get CSRF token");
+        return;
+      }
+
+      // 2. Submit POST form programmatically
+      // We must use a real form submission for the browser to follow the redirect chain correctly
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = `${apiUrl}/api/auth/signin/${provider}`;
+
+      const csrfInput = document.createElement('input');
+      csrfInput.type = 'hidden';
+      csrfInput.name = 'csrfToken';
+      csrfInput.value = csrfToken;
+      form.appendChild(csrfInput);
+
+      // Add callbackUrl if we want to be explicit, though default is usually fine
+      // const callbackInput = document.createElement('input');
+      // callbackInput.type = 'hidden';
+      // callbackInput.name = 'callbackUrl';
+      // callbackInput.value = window.location.origin;
+      // form.appendChild(callbackInput);
+
+      document.body.appendChild(form);
+      form.submit();
+
+    } catch (e) {
+      console.error("Login flow error:", e);
+    }
   };
 
   return (

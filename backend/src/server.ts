@@ -53,6 +53,7 @@ export async function createServer() {
 
   app.use(cors(corsOptions));
   app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
   // Debug Middleware for Auth
   app.use("/api/auth", (req, res, next) => {

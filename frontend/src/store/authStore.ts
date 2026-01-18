@@ -73,7 +73,8 @@ export const useAuthStore = create<AuthStore>()(
       setGuestName: (guestName) => set({ guestName }),
 
       login: () => {
-        window.location.href = `${API_URL}/api/auth/signin`;
+        // Redirect to home where LandingPage handles the UI interaction
+        window.location.href = '/';
       },
 
       logout: async () => {
