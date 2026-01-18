@@ -43,7 +43,12 @@ Thumbs.db
 # TypeScript
 *.tsbuildinfo
 
-# Temporary files
-tmp/
-temp/
-tmpclaude-*
+# Local Development
+*.db
+local.db
+
+# Debug artifacts
+*.png
+google-flow-debug.png
+google-redirect-failure.png
+login-error-state.png
