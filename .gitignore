@@ -52,3 +52,6 @@ local.db
 google-flow-debug.png
 google-redirect-failure.png
 login-error-state.png
+
+# Temporary working files
+**/tmpclaude-*-cwd
