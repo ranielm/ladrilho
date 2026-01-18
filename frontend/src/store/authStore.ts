@@ -83,11 +83,36 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       logout: async () => {
-        // Optional: Call signout endpoint if needed, or just clear local state 
-        // usually /api/auth/signout
-        await fetch(`${API_URL}/api/auth/signout`, { method: 'POST', credentials: 'include' });
-        set({ user: null, isAuthenticated: false });
-        window.location.reload();
+        try {
+          // Auth.js requires CSRF token for signout
+          const csrfRes = await fetch(`${API_URL}/api/auth/csrf`, { credentials: 'include' });
+          const csrfData = await csrfRes.json();
+          const csrfToken = csrfData.csrfToken;
+
+          if (csrfToken) {
+            // Create form and submit to trigger proper signout
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `${API_URL}/api/auth/signout`;
+
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfToken';
+            csrfInput.value = csrfToken;
+            form.appendChild(csrfInput);
+
+            document.body.appendChild(form);
+            form.submit();
+          } else {
+            // Fallback: just clear local state
+            set({ user: null, isAuthenticated: false });
+            window.location.reload();
+          }
+        } catch (error) {
+          console.error('Logout error:', error);
+          set({ user: null, isAuthenticated: false });
+          window.location.reload();
+        }
       },
     }),
     {

@@ -99,6 +99,11 @@ export const translations = {
     skipForNow: 'Pular por enquanto',
     passwordsMustMatch: 'As senhas devem ser iguais',
     passwordTooShort: 'A senha deve ter pelo menos 6 caracteres',
+    signInWithGoogle: 'Entrar com Google',
+    signInWithGitHub: 'Entrar com GitHub',
+    loginToJoin: 'Faça login para entrar:',
+    continueAsGuest: 'Continuar como convidado',
+    or: 'ou',
 
     // Game Controls
     enterFullscreen: 'Tela Cheia',
@@ -262,6 +267,11 @@ export const translations = {
     skipForNow: 'Skip for now',
     passwordsMustMatch: 'Passwords must match',
     passwordTooShort: 'Password must be at least 6 characters',
+    signInWithGoogle: 'Sign in with Google',
+    signInWithGitHub: 'Sign in with GitHub',
+    loginToJoin: 'Login to join:',
+    continueAsGuest: 'Continue as guest',
+    or: 'or',
 
     // Game Controls
     enterFullscreen: 'Fullscreen',
