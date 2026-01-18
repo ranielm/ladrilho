@@ -144,6 +144,29 @@ export function setupSocketHandlers(io: Server): void {
       console.log(`Player reconnected to room ${roomId}`);
     });
 
+    // Check for active game by player name (for session recovery)
+    socket.on('player:check-active-game', (payload: { playerName: string }) => {
+      const { playerName } = payload;
+
+      if (!playerName) {
+        socket.emit('player:active-game-result', { found: false });
+        return;
+      }
+
+      const result = roomManager.findActiveGameByPlayerName(playerName);
+
+      if (result) {
+        socket.emit('player:active-game-result', {
+          found: true,
+          roomId: result.room.id,
+          playerId: result.player.id,
+          gameState: result.room.gameState
+        });
+      } else {
+        socket.emit('player:active-game-result', { found: false });
+      }
+    });
+
     // Change room code
     socket.on('room:change-code', (payload: ChangeRoomCodePayload) => {
       const { roomId, newRoomId } = payload;

@@ -203,6 +203,21 @@ export function useSocket() {
     [room]
   );
 
+  // Check for active game and auto-reconnect
+  const checkActiveGame = useCallback((playerName: string, onResult: (data: {
+    found: boolean;
+    roomId?: string;
+    playerId?: string;
+    gameState?: any;
+  }) => void) => {
+    socketService.onActiveGameResult(onResult);
+    socketService.checkActiveGame(playerName);
+  }, []);
+
+  const reconnect = useCallback((roomId: string, playerId: string) => {
+    socketService.reconnect(roomId, playerId);
+  }, []);
+
   return {
     createRoom,
     joinRoom,
@@ -211,5 +226,7 @@ export function useSocket() {
     makeMove,
     restartGame,
     changeRoomCode,
+    checkActiveGame,
+    reconnect,
   };
 }

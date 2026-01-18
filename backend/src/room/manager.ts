@@ -197,6 +197,10 @@ export function getRoom(roomId: string): Room | undefined {
   return store.getRoom(roomId);
 }
 
+export function findActiveGameByPlayerName(playerName: string) {
+  return store.findActiveGameByPlayerName(playerName);
+}
+
 export function setPlayerConnection(
   roomId: string,
   playerId: string,

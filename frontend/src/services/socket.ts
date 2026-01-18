@@ -134,6 +134,20 @@ class SocketService {
     this.socket?.emit('room:change-code', { roomId, newRoomId });
   }
 
+  // Check for active game by player name (session recovery)
+  checkActiveGame(playerName: string): void {
+    this.socket?.emit('player:check-active-game', { playerName });
+  }
+
+  onActiveGameResult(callback: (data: {
+    found: boolean;
+    roomId?: string;
+    playerId?: string;
+    gameState?: GameState
+  }) => void): void {
+    this.on('player:active-game-result', callback);
+  }
+
   // Event listeners
   on<T>(event: string, callback: (data: T) => void): void {
     this.socket?.on(event, callback as (...args: unknown[]) => void);

@@ -160,6 +160,28 @@ export function getAllRooms(): Room[] {
   return Array.from(rooms.values());
 }
 
+// Find an active game where a player with this name exists (for reconnection)
+export function findActiveGameByPlayerName(playerName: string): { room: Room; player: Player } | null {
+  const normalizedName = playerName.toLowerCase().trim();
+
+  for (const room of rooms.values()) {
+    // Only consider games in progress
+    if (room.gameState.phase === 'waiting' || room.gameState.phase === 'finished') {
+      continue;
+    }
+
+    const player = room.gameState.players.find(
+      p => p.name.toLowerCase() === normalizedName
+    );
+
+    if (player) {
+      return { room, player };
+    }
+  }
+
+  return null;
+}
+
 export function changeRoomId(oldId: string, newId: string): Room | null {
   const room = rooms.get(oldId);
   if (!room) return null;
