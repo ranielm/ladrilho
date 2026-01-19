@@ -18,7 +18,7 @@ export function CreateRoom({ onCreateRoom, onBack }: CreateRoomProps) {
 
   useEffect(() => {
     if (user) {
-      setPlayerName(user.name || user.username || 'Player');
+      setPlayerName(user.name || user.username || t.player);
     } else if (guestName) {
       setPlayerName(guestName);
     }

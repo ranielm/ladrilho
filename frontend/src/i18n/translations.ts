@@ -7,6 +7,8 @@ export const translations = {
     subtitle: 'Jogue o clássico jogo de tabuleiro com amigos',
     createRoom: 'Criar Sala',
     joinRoom: 'Entrar na Sala',
+    welcomeBack: 'Bem-vindo de volta',
+    user: 'Usuário',
     noAccountNeeded: 'Sem necessidade de conta. Basta compartilhar o código!',
     players: 'jogadores',
 
@@ -58,6 +60,9 @@ export const translations = {
 
     // Game Over
     youWon: 'Você Venceu!',
+    youLost: 'Você Perdeu',
+    guest: 'Visitante',
+    player: 'Jogador',
     gameOver: 'Fim de Jogo',
     congratulations: 'Parabéns pela vitória!',
     playerWins: (name: string) => `${name} venceu o jogo!`,
@@ -86,6 +91,7 @@ export const translations = {
     confirmPassword: 'Confirmar Senha',
     username: 'Nome de Usuário',
     usernamePlaceholder: 'jogador123',
+    account: 'Conta',
     login: 'Entrar',
     signUp: 'Cadastrar',
     logout: 'Sair',
@@ -176,6 +182,8 @@ export const translations = {
     subtitle: 'Play the classic board game with friends',
     createRoom: 'Create Room',
     joinRoom: 'Join Room',
+    welcomeBack: 'Welcome back',
+    user: 'User',
     noAccountNeeded: 'No account needed. Just share the room code!',
     players: 'players',
 
@@ -227,6 +235,9 @@ export const translations = {
 
     // Game Over
     youWon: 'You Won!',
+    youLost: 'You Lost',
+    guest: 'Guest',
+    player: 'Player',
     gameOver: 'Game Over',
     congratulations: 'Congratulations on your victory!',
     playerWins: (name: string) => `${name} wins the game!`,
@@ -255,6 +266,7 @@ export const translations = {
     confirmPassword: 'Confirm Password',
     username: 'Username',
     usernamePlaceholder: 'player123',
+    account: 'Account',
     login: 'Login',
     signUp: 'Sign Up',
     logout: 'Logout',

@@ -26,7 +26,7 @@ export function JoinRoom({ onJoinRoom, onBack, initialRoomId = '' }: JoinRoomPro
 
   useEffect(() => {
     if (user) {
-      setPlayerName(user.name || user.username || 'Player');
+      setPlayerName(user.name || user.username || t.player);
     } else if (guestName) {
       setPlayerName(guestName);
     }

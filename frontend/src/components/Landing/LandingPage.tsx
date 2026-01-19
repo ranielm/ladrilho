@@ -158,7 +158,7 @@ export function LandingPage({ onCreateRoom, onJoinRoom }: LandingPageProps) {
               }`}
             whileTap={{ scale: 0.98 }}
           >
-            {isAuthenticated ? 'Account' : 'Login'}
+            {isAuthenticated ? t.account || 'Conta' : t.login}
           </motion.button>
         </div>
 
@@ -173,7 +173,7 @@ export function LandingPage({ onCreateRoom, onJoinRoom }: LandingPageProps) {
               transition={{ duration: 0.2 }}
             >
               {isLoading ? (
-                <div className="text-center py-8 text-slate-400">Loading session...</div>
+                <div className="text-center py-8 text-slate-400">{t.loading}</div>
               ) : isAuthenticated && user ? (
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -183,11 +183,11 @@ export function LandingPage({ onCreateRoom, onJoinRoom }: LandingPageProps) {
                   <div className="p-4 rounded-lg bg-blue-500/10 border border-blue-500/20 mb-4 flex items-center gap-4">
                     <UserAvatar
                       src={user.image}
-                      name={user.name || user.username || 'User'}
+                      name={user.name || user.username || t.user}
                       size="lg"
                     />
                     <div>
-                      <p className="text-slate-200 text-sm">Welcome back,</p>
+                      <p className="text-slate-200 text-sm">{t.welcomeBack},</p>
                       <p className="text-white font-bold text-lg">{user.name || user.username}</p>
                     </div>
                   </div>
