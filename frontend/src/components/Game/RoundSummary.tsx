@@ -313,7 +313,7 @@ export function RoundSummary({ gameState, playerId }: RoundSummaryProps) {
                 <h2 className="text-2xl font-bold mb-1">
                   {t.roundComplete(completedRound)}
                 </h2>
-                <p className="text-slate-400 text-sm">
+                <p className="text-gray-400 text-lg">
                   {t.nextRound(gameState.round)}
                 </p>
               </div>
