@@ -16,6 +16,7 @@ import { useTranslation } from './i18n/useLanguage';
 import { TileSelection } from '@shared/types';
 import { TutorialOverlay } from './components/Tutorial/TutorialOverlay';
 import { VersionFooter } from './components/VersionFooter';
+import { AmbientBackground } from './components/UI/AmbientBackground';
 
 type Screen = 'home' | 'create' | 'join' | 'lobby' | 'game';
 
@@ -160,143 +161,150 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen">
-      {/* Language selector */}
-      <div className="fixed top-4 right-4 z-50">
-        <LanguageSelector />
-      </div>
+    <div className="min-h-screen relative bg-slate-900 overflow-x-hidden">
+      {/* Ambient Background Glow */}
+      <AmbientBackground />
 
-      {/* Connection status */}
-      {!isConnected && (
-        <div className="fixed top-0 left-0 right-0 bg-red-600 text-white text-center py-2 z-50">
-          {t.connectingToServer}
+      <div className="relative z-10 min-h-screen flex flex-col">
+        {/* Language selector */}
+        <div className="fixed top-4 right-4 z-50">
+          <LanguageSelector />
         </div>
-      )}
 
-      {/* Error toast */}
-      <Toast message={error} onClose={clearError} />
-
-      <AnimatePresence>
-        {showTutorial && (
-          <TutorialOverlay
-            onClose={() => setShowTutorial(false)}
-            onComplete={handleTutorialComplete}
-          />
+        {/* Connection status */}
+        {!isConnected && (
+          <div className="fixed top-0 left-0 right-0 bg-red-600 text-white text-center py-2 z-50">
+            {t.connectingToServer}
+          </div>
         )}
-      </AnimatePresence>
 
-      <AnimatePresence mode="wait">
-        {/* Home Screen */}
-        {screen === 'home' && (
-          <motion.div
-            key="home"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <LandingPage
-              onCreateRoom={() => setScreen('create')}
-              onJoinRoom={() => setScreen('join')}
+        {/* Error toast */}
+        <Toast message={error} onClose={clearError} />
+
+        <AnimatePresence>
+          {showTutorial && (
+            <TutorialOverlay
+              onClose={() => setShowTutorial(false)}
+              onComplete={handleTutorialComplete}
             />
-          </motion.div>
-        )}
+          )}
+        </AnimatePresence>
 
-        {/* Create Room Screen */}
-        {screen === 'create' && (
-          <motion.div
-            key="create"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="min-h-screen flex items-center justify-center p-4"
-          >
-            <CreateRoom
-              onCreateRoom={handleCreateRoom}
-              onBack={() => setScreen('home')}
-            />
-          </motion.div>
-        )}
+        <AnimatePresence mode="wait">
+          {/* Home Screen */}
+          {screen === 'home' && (
+            <motion.div
+              key="home"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <LandingPage
+                onCreateRoom={() => setScreen('create')}
+                onJoinRoom={() => setScreen('join')}
+              />
+            </motion.div>
+          )}
 
-        {/* Join Room Screen */}
-        {screen === 'join' && (
-          <motion.div
-            key="join"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="min-h-screen flex items-center justify-center p-4"
-          >
-            <JoinRoom
-              onJoinRoom={handleJoinRoom}
-              onBack={() => {
-                setScreen('home');
-                setInitialRoomId('');
-              }}
-              initialRoomId={initialRoomId}
-            />
-          </motion.div>
-        )}
+          {/* ... existing screens ... */}
+          {/* Create Room Screen */}
+          {screen === 'create' && (
+            <motion.div
+              key="create"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex-1 flex items-center justify-center p-4"
+            >
+              <CreateRoom
+                onCreateRoom={handleCreateRoom}
+                onBack={() => setScreen('home')}
+              />
+            </motion.div>
+          )}
 
-        {/* Lobby Screen */}
-        {screen === 'lobby' && room && playerId && (
-          <motion.div
-            key="lobby"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="min-h-screen flex items-center justify-center p-4"
-          >
-            <Lobby
-              room={room}
-              playerId={playerId}
-              onStartGame={startGame}
-              onLeaveRoom={handleLeaveRoom}
-              onChangeCode={changeRoomCode}
-            />
-          </motion.div>
-        )}
+          {/* Join Room Screen */}
+          {screen === 'join' && (
+            <motion.div
+              key="join"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex-1 flex items-center justify-center p-4"
+            >
+              <JoinRoom
+                onJoinRoom={handleJoinRoom}
+                onBack={() => {
+                  setScreen('home');
+                  setInitialRoomId('');
+                }}
+                initialRoomId={initialRoomId}
+              />
+            </motion.div>
+          )}
 
-        {/* Game Screen */}
-        {screen === 'game' && (
-          <motion.div
-            key="game"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            {gameState && playerId ? (
-              <>
-                <GameBoard
-                  gameState={gameState}
-                  playerId={playerId}
-                  selectedTiles={selectedTiles}
-                  onSelectTiles={handleSelectTiles}
-                  onClearSelection={handleClearSelection}
-                  onMakeMove={makeMove}
-                  onLeaveGame={handleLeaveRoom}
-                  onShowTutorial={() => setShowTutorial(true)}
-                />
+          {/* Lobby Screen */}
+          {screen === 'lobby' && room && playerId && (
+            <motion.div
+              key="lobby"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex-1 flex items-center justify-center p-4"
+            >
+              <Lobby
+                room={room}
+                playerId={playerId}
+                onStartGame={startGame}
+                onLeaveRoom={handleLeaveRoom}
+                onChangeCode={changeRoomCode}
+              />
+            </motion.div>
+          )}
 
-                {/* Game Over Modal */}
-                {gameState.phase === 'finished' && (
-                  <GameOver
+          {/* Game Screen */}
+          {screen === 'game' && (
+            <motion.div
+              key="game"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex-1"
+            >
+              {gameState && playerId ? (
+                <>
+                  <GameBoard
                     gameState={gameState}
                     playerId={playerId}
-                    isHost={isHost}
-                    onRestart={restartGame}
-                    onLeave={handleLeaveRoom}
+                    selectedTiles={selectedTiles}
+                    onSelectTiles={handleSelectTiles}
+                    onClearSelection={handleClearSelection}
+                    onMakeMove={makeMove}
+                    onLeaveGame={handleLeaveRoom}
+                    onShowTutorial={() => setShowTutorial(true)}
                   />
-                )}
-              </>
-            ) : (
-              // Fallback while exiting if state is cleared but animation is running
-              <div className="fixed inset-0 bg-slate-900" />
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
 
-      <VersionFooter />
+                  {/* Game Over Modal */}
+                  {gameState.phase === 'finished' && (
+                    <GameOver
+                      gameState={gameState}
+                      playerId={playerId}
+                      isHost={isHost}
+                      onRestart={restartGame}
+                      onLeave={handleLeaveRoom}
+                    />
+                  )}
+                </>
+              ) : (
+                // Fallback while exiting if state is cleared but animation is running
+                <div className="fixed inset-0 bg-slate-900" />
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <VersionFooter />
+      </div>
     </div>
   );
 }
