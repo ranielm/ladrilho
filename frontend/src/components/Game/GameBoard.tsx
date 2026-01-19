@@ -40,12 +40,13 @@ export function GameBoard({
   });
 
   return (
-    <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 pb-safe">
+    <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 pb-safe flex flex-col gap-4 lg:block">
       {/* Game Controls Toolbar */}
       <GameControls onLeaveGame={onLeaveGame} />
 
       {/* Game info header - compact on mobile */}
-      <div className="text-center mb-4 sm:mb-6">
+      {/* Added mt-14 to fix overlap with fixed buttons on mobile, and order-1 for mobile flow */}
+      <div className="text-center mb-4 sm:mb-6 mt-14 sm:mt-0 order-1 lg:order-none">
         <h2 className="text-lg sm:text-xl font-semibold mb-1 sm:mb-2">
           {t.round} {gameState.round}
         </h2>
@@ -59,13 +60,15 @@ export function GameBoard({
         </motion.p>
       </div>
 
-      {/* Shared Score Track - All players on one track */}
-      <SharedScoreTrack players={gameState.players} currentPlayerId={playerId} />
+      {/* Shared Score Track - Order 4 on mobile */}
+      <div className="order-4 lg:order-none w-full">
+        <SharedScoreTrack players={gameState.players} currentPlayerId={playerId} />
+      </div>
 
-      {/* Mobile: Vertical stack | Desktop: Side by side */}
-      <div className="flex flex-col lg:grid lg:grid-cols-[1fr_auto] gap-4 sm:gap-8">
-        {/* Factories and center - First on mobile for tile selection */}
-        <div className="order-1 lg:order-2 lg:w-80">
+      {/* Mobile: Use contents to flatten for ordering -> Desktop: Grid */}
+      <div className="contents lg:grid lg:grid-cols-[1fr_auto] lg:gap-8">
+        {/* Factories and center - Order 3 on Mobile */}
+        <div className="order-3 lg:order-2 lg:w-80">
           <div className="lg:sticky lg:top-4">
             <FactoryDisplay
               factories={gameState.factories}
@@ -103,20 +106,24 @@ export function GameBoard({
           </div>
         </div>
 
-        {/* Player boards - Stacked vertically on mobile */}
-        <div className="order-2 lg:order-1">
-          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+        {/* Player boards - Order mixed on mobile (MyBoard=2, Others=5) */}
+        <div className="contents lg:block lg:order-1">
+          <div className="contents md:grid md:grid-cols-2 md:gap-4">
             {sortedPlayers.map((player) => (
-              <Board
+              <div
                 key={player.id}
-                player={player}
-                isCurrentPlayer={player.id === currentPlayer?.id}
-                isMyBoard={player.id === playerId}
-                selectedTiles={player.id === playerId ? selectedTiles : null}
-                onMakeMove={onMakeMove}
-                onClearSelection={onClearSelection}
-                myPlayerId={playerId}
-              />
+                className={`${player.id === playerId ? 'order-2' : 'order-5'} md:order-none w-full`}
+              >
+                <Board
+                  player={player}
+                  isCurrentPlayer={player.id === currentPlayer?.id}
+                  isMyBoard={player.id === playerId}
+                  selectedTiles={player.id === playerId ? selectedTiles : null}
+                  onMakeMove={onMakeMove}
+                  onClearSelection={onClearSelection}
+                  myPlayerId={playerId}
+                />
+              </div>
             ))}
           </div>
         </div>
