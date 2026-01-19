@@ -20,6 +20,7 @@ interface AuthStore {
   activeGameId: string | null;
   checkSession: () => Promise<void>;
   setGuestName: (name: string) => void;
+  setActiveGameId: (id: string | null) => void;
   login: () => void; // Redirects to signin
   logout: () => void;
 }
@@ -76,6 +77,8 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       setGuestName: (guestName) => set({ guestName }),
+
+      setActiveGameId: (id) => set({ activeGameId: id }),
 
       login: () => {
         // Redirect to home where LandingPage handles the UI interaction

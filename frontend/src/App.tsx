@@ -21,25 +21,38 @@ function App() {
   const [initialRoomId, setInitialRoomId] = useState<string>('');
   const [selectedTiles, setSelectedTiles] = useState<TileSelection | null>(null);
 
-  const { createRoom, joinRoom, leaveRoom, startGame, makeMove, restartGame, changeRoomCode } =
+  const { createRoom, joinRoom, leaveRoom, startGame, makeMove, restartGame, changeRoomCode, checkActiveGame } =
     useSocket();
 
   const { room, gameState, playerId, error, clearError, isConnected } =
     useGameStore();
 
-  const { activeGameId, user } = useAuthStore();
+  const { activeGameId, user, setActiveGameId } = useAuthStore();
 
   const { t } = useTranslation();
 
   // Handle automatic reconnection
   useEffect(() => {
-    if (activeGameId && user?.username && isConnected) {
-      if (!room && !gameState) {
+    if (isConnected && user?.username && !room && !gameState) {
+      // 1. If we have a known active game from AuthStore, try to join it
+      if (activeGameId) {
         console.log('Attempting auto-reconnect to', activeGameId);
         joinRoom(activeGameId, user.username);
       }
+      // 2. Otherwise, double-check with the server via socket if we have any active game
+      // (This handles cases where AuthStore might be stale or cleared but server knows better)
+      else if (user?.username) {
+        const currentUsername = user.username;
+        checkActiveGame(currentUsername, (result) => {
+          if (result.found && result.roomId) {
+            console.log('Found active game via socket check:', result.roomId);
+            setActiveGameId(result.roomId);
+            joinRoom(result.roomId, currentUsername);
+          }
+        });
+      }
     }
-  }, [activeGameId, user?.username, isConnected, room, gameState, joinRoom]);
+  }, [activeGameId, user?.username, isConnected, room, gameState, joinRoom, checkActiveGame, setActiveGameId]);
 
   // Check for room ID in URL
   useEffect(() => {
@@ -82,6 +95,7 @@ function App() {
 
   const handleLeaveRoom = () => {
     leaveRoom();
+    setActiveGameId(null);
     setScreen('home');
     setSelectedTiles(null);
   };
