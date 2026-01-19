@@ -118,6 +118,7 @@ export interface CreateRoomPayload {
   playerName: string;
   playerEmail?: string;
   playerImage?: string;
+  playerId?: string;
   maxPlayers: 2 | 3 | 4;
 }
 
@@ -126,6 +127,7 @@ export interface JoinRoomPayload {
   playerName: string;
   playerEmail?: string;
   playerImage?: string;
+  playerId?: string;
 }
 
 export interface GameMovePayload {

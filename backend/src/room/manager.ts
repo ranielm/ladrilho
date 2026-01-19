@@ -41,10 +41,11 @@ export function createNewRoom(
 
 export function joinRoom(
   roomId: string,
-  playerId: string,
+  socketId: string,
   playerName: string,
   playerImage?: string,
-  playerEmail?: string
+  playerEmail?: string,
+  stablePlayerId?: string
 ): { success: boolean; room?: Room; error?: string } {
   const room = store.getRoom(roomId);
 
@@ -53,54 +54,38 @@ export function joinRoom(
   }
 
   // IDENTITY LOGIC:
-  // 1. Check if this is a REJOIN by email (same user, possibly new socket)
+  // 1. Check if this is a REJOIN by email or stable ID
   // 2. Check if name is taken by a DIFFERENT user (collision)
 
-  // First, check for email-based rejoin (authenticated users)
-  if (playerEmail) {
-    const existingPlayerByEmail = room.gameState.players.findIndex(
-      (p) => p.email && p.email.toLowerCase() === playerEmail.toLowerCase()
-    );
+  const existingPlayerIndex = room.gameState.players.findIndex(p => {
+    // Match by email
+    const emailMatch = playerEmail && p.email && p.email.toLowerCase() === playerEmail.toLowerCase();
+    // Match by stable ID (if provided) or fallback to their last socket ID
+    const idMatch = stablePlayerId ? p.id === stablePlayerId : p.id === socketId;
 
-    if (existingPlayerByEmail !== -1) {
-      // REJOIN: Same authenticated user
-      room.gameState.players[existingPlayerByEmail].id = playerId;
-      room.gameState.players[existingPlayerByEmail].name = playerName; // Allow name update on rejoin
-      room.gameState.players[existingPlayerByEmail].image = playerImage;
-      room.gameState.players[existingPlayerByEmail].isConnected = true;
+    return emailMatch || idMatch;
+  });
 
-      store.updateRoom(roomId, room);
-      console.log(`Player ${playerName} (${playerEmail}) rejoined room ${roomId} via email match`);
+  if (existingPlayerIndex !== -1) {
+    // REJOIN: Same user detected
+    const player = room.gameState.players[existingPlayerIndex];
+    player.id = socketId; // Update to the current socket ID
+    player.name = playerName; // Allow name update on rejoin
+    player.image = playerImage;
+    player.isConnected = true;
 
-      return { success: true, room };
-    }
+    store.updateRoom(roomId, room);
+    console.log(`Player ${playerName} rejoined room ${roomId} via identity match`);
+
+    return { success: true, room };
   }
 
   // Check for name collision with OTHER users
   const nameCollision = room.gameState.players.find(
-    (p) => p.name.toLowerCase() === playerName.toLowerCase() &&
-      (!playerEmail || !p.email || p.email.toLowerCase() !== playerEmail.toLowerCase())
+    (p) => p.name.toLowerCase() === playerName.toLowerCase()
   );
 
   if (nameCollision) {
-    // For guests (no email), also check socket-based reconnection
-    if (!playerEmail && nameCollision.id !== playerId) {
-      const isNewSocket = nameCollision.id !== playerId;
-      const canReconnect = !nameCollision.isConnected || isNewSocket;
-
-      if (canReconnect) {
-        // Guest reconnection by name
-        const idx = room.gameState.players.findIndex(p => p.id === nameCollision.id);
-        room.gameState.players[idx].id = playerId;
-        room.gameState.players[idx].isConnected = true;
-
-        store.updateRoom(roomId, room);
-        console.log(`Guest ${playerName} reconnected to room ${roomId} (socket-based)`);
-
-        return { success: true, room };
-      }
-    }
-
     return { success: false, error: 'Name already taken in this room' };
   }
 
@@ -113,7 +98,7 @@ export function joinRoom(
   }
 
   const newPlayer: Player = {
-    id: playerId,
+    id: socketId,
     name: playerName,
     email: playerEmail,
     image: playerImage,
@@ -132,7 +117,6 @@ export function joinRoom(
   if (!updatedRoom) {
     return { success: false, error: 'Failed to join room' };
   }
-
 
   return { success: true, room: updatedRoom };
 }

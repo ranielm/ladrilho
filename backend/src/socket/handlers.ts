@@ -41,14 +41,14 @@ export function setupSocketHandlers(io: Server): void {
 
     // Join an existing room
     socket.on('room:join', (payload: JoinRoomPayload) => {
-      const { roomId, playerName, playerImage, playerEmail } = payload;
+      const { roomId, playerName, playerImage, playerEmail, playerId } = payload;
 
       if (!isValidPlayerName(playerName)) {
         socket.emit('room:error', { message: 'Invalid player name' });
         return;
       }
 
-      const result = roomManager.joinRoom(roomId.toUpperCase(), socket.id, playerName.trim(), playerImage, playerEmail);
+      const result = roomManager.joinRoom(roomId.toUpperCase(), socket.id, playerName.trim(), playerImage, playerEmail, playerId);
 
       if (!result.success || !result.room) {
         socket.emit('room:error', { message: result.error || 'Failed to join room' });

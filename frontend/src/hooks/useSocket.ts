@@ -179,11 +179,13 @@ export function useSocket() {
 
   // Actions
   const createRoom = useCallback((playerName: string, maxPlayers: 2 | 3 | 4) => {
-    socketService.createRoom(playerName, maxPlayers, user?.image || undefined, user?.email || undefined);
+    const storedPlayerId = localStorage.getItem('ladrilho-player-id') || undefined;
+    socketService.createRoom(playerName, maxPlayers, user?.image || undefined, user?.email || undefined, storedPlayerId);
   }, [user?.image, user?.email]);
 
   const joinRoom = useCallback((roomId: string, playerName: string) => {
-    socketService.joinRoom(roomId, playerName, user?.image || undefined, user?.email || undefined);
+    const storedPlayerId = localStorage.getItem('ladrilho-player-id') || undefined;
+    socketService.joinRoom(roomId, playerName, user?.image || undefined, user?.email || undefined, storedPlayerId);
   }, [user?.image, user?.email]);
 
   const leaveRoom = useCallback(() => {

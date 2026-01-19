@@ -56,7 +56,7 @@ export function Lobby({ room, playerId, onStartGame, onLeaveRoom, onChangeCode }
       initial={{ opacity: 0, y: 30, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="glass-card relative z-10 px-8 py-10 rounded-2xl w-full max-w-md"
+      className="bg-slate-800 border border-slate-700 relative z-10 px-8 py-10 rounded-2xl w-full max-w-md shadow-2xl"
     >
       {/* Title with decorative underline */}
       <motion.div
@@ -69,9 +69,9 @@ export function Lobby({ room, playerId, onStartGame, onLeaveRoom, onChangeCode }
 
         {/* Decorative underline */}
         <div className="flex justify-center gap-2 mb-4">
-          <div className="w-6 h-1 rounded-full bg-gradient-to-r from-[#006DB2] to-[#0080CC]" />
-          <div className="w-6 h-1 rounded-full bg-gradient-to-r from-[#E6A745] to-[#F0B652]" />
-          <div className="w-6 h-1 rounded-full bg-gradient-to-r from-[#D93844] to-[#E84550]" />
+          <div className="w-6 h-1 rounded-full bg-[#006DB2]" />
+          <div className="w-6 h-1 rounded-full bg-[#E6A745]" />
+          <div className="w-6 h-1 rounded-full bg-[#D93844]" />
         </div>
 
         <p className="text-slate-400 text-sm">{t.roomCode}</p>
@@ -85,7 +85,7 @@ export function Lobby({ room, playerId, onStartGame, onLeaveRoom, onChangeCode }
         className="text-center mb-6"
       >
         <div className="flex items-center justify-center gap-3 flex-wrap">
-          <span className="text-4xl font-mono font-bold tracking-widest bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent">
+          <span className="text-4xl font-mono font-bold tracking-widest text-blue-400">
             {room.id}
           </span>
           <div className="flex gap-2">

@@ -94,13 +94,13 @@ class SocketService {
   }
 
   // Room operations
-  createRoom(playerName: string, maxPlayers: 2 | 3 | 4, playerImage?: string, playerEmail?: string): void {
-    const payload: CreateRoomPayload = { playerName, maxPlayers, playerImage, playerEmail };
+  createRoom(playerName: string, maxPlayers: 2 | 3 | 4, playerImage?: string, playerEmail?: string, playerId?: string): void {
+    const payload: CreateRoomPayload = { playerName, maxPlayers, playerImage, playerEmail, playerId };
     this.socket?.emit('room:create', payload);
   }
 
-  joinRoom(roomId: string, playerName: string, playerImage?: string, playerEmail?: string): void {
-    const payload: JoinRoomPayload = { roomId, playerName, playerImage, playerEmail };
+  joinRoom(roomId: string, playerName: string, playerImage?: string, playerEmail?: string, playerId?: string): void {
+    const payload: JoinRoomPayload = { roomId, playerName, playerImage, playerEmail, playerId };
     this.socket?.emit('room:join', payload);
   }
 

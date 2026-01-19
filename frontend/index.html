@@ -1,34 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="description" content="Play Azul board game online with friends" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="theme-color" content="#0f172a" />
-    <title>Ladrilho</title>
-    <script>
-      (function() {
-        try {
-          const stored = localStorage.getItem('ladrilho-theme');
-          let isDark = true;
-          if (stored) {
-            const parsed = JSON.parse(stored);
-            isDark = parsed.state.theme !== 'light';
-          }
-          if (isDark) {
-            document.documentElement.classList.add('dark');
-          } else {
-            document.documentElement.classList.remove('dark');
-          }
-        } catch (e) {}
-      })();
-    </script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="Play Azul board game online with friends" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Ladrilho</title>
+  <script>
+    (function () {
+      try {
+        const stored = localStorage.getItem('ladrilho-theme');
+        let isDark = true;
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          isDark = parsed.state.theme !== 'light';
+        } else {
+          // Force save dark if missing to ensure consistency
+          localStorage.setItem('ladrilho-theme', JSON.stringify({ state: { theme: 'dark' }, version: 0 }));
+        }
+
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) { }
+    })();
+  </script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>
