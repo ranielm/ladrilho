@@ -41,6 +41,28 @@ export function GameBoard({
     return 0;
   });
 
+  const handleTileDrop = (source: TileSelection, targetRow: number) => {
+    if (!isMyTurn) return;
+
+    // Execute the move directly
+    // Logic: Select tiles -> Select Line
+    // But since we have both source and target, we can just call onMakeMove directly?
+    // onMakeMove expects { color, source, sourceIndex, quantity?, targetRow }? 
+    // No, onMakeMove expects `PlayerMove` which is { sourceIndex, source: 'factory'|'center', color, targetRow }
+
+    // We need the color from source? TileSelection has color.
+    onMakeMove({
+      // @ts-ignore
+      color: source.color,
+      source: source.source,
+      factoryIndex: source.factoryIndex,
+      targetRow: targetRow
+    });
+
+    // Also clear selection to be safe
+    onClearSelection();
+  };
+
   return (
     <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 pb-safe flex flex-col gap-4 lg:block">
       {/* Game Controls Toolbar */}
@@ -79,6 +101,7 @@ export function GameBoard({
               onSelectTiles={onSelectTiles}
               selectedTiles={selectedTiles}
               disabled={!isMyTurn}
+              onTileDrop={handleTileDrop}
             />
 
             {/* Selection indicator */}

@@ -11,6 +11,7 @@ interface FactoryDisplayProps {
   onSelectTiles: (selection: TileSelection) => void;
   selectedTiles: TileSelection | null;
   disabled?: boolean;
+  onTileDrop?: (source: TileSelection, targetRow: number) => void;
 }
 
 export function FactoryDisplay({
@@ -20,6 +21,7 @@ export function FactoryDisplay({
   onSelectTiles,
   selectedTiles,
   disabled = false,
+  onTileDrop,
 }: FactoryDisplayProps) {
   const { t } = useTranslation();
 
@@ -40,6 +42,7 @@ export function FactoryDisplay({
               onSelectTiles={onSelectTiles}
               selectedTiles={selectedTiles}
               disabled={disabled}
+              onTileDrop={onTileDrop}
             />
           ))}
         </div>
@@ -54,6 +57,7 @@ export function FactoryDisplay({
           onSelectTiles={onSelectTiles}
           selectedTiles={selectedTiles}
           disabled={disabled}
+          onTileDrop={onTileDrop}
         />
       </div>
 

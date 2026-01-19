@@ -10,6 +10,7 @@ interface FactoryProps {
   onSelectTiles: (selection: TileSelection) => void;
   selectedTiles: TileSelection | null;
   disabled?: boolean;
+  onTileDrop?: (source: TileSelection, targetRow: number) => void;
 }
 
 export function Factory({
@@ -18,6 +19,7 @@ export function Factory({
   onSelectTiles,
   selectedTiles,
   disabled = false,
+  onTileDrop,
 }: FactoryProps) {
   const isSelected =
     selectedTiles?.source === 'factory' &&
@@ -73,6 +75,8 @@ export function Factory({
             onClick={() => handleTileClick(tile)}
             selected={isSelected && selectedTiles?.color === tile}
             disabled={disabled}
+            sourceInfo={{ source: 'factory', factoryIndex, color: tile }}
+            onDrop={onTileDrop}
           />
         ) : (
           <div key={`${factoryIndex}-${index}`} className="w-8 h-8" />

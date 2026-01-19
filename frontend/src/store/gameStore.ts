@@ -23,6 +23,10 @@ interface GameStore {
   highlightedCells: WallHighlight[];
   error: string | null;
 
+  // Drag state
+  draggingColor: TileColor | null;
+  setDraggingColor: (color: TileColor | null) => void;
+
   // Actions
   setPlayerId: (id: string | null) => void;
   setConnected: (connected: boolean) => void;
@@ -41,12 +45,17 @@ const initialState = {
   room: null,
   gameState: null,
   selectedTiles: null,
+  draggingColor: null,
   highlightedCells: [],
   error: null,
 };
 
 export const useGameStore = create<GameStore>((set) => ({
   ...initialState,
+
+  // Drag state
+  draggingColor: null,
+  setDraggingColor: (color: TileColor | null) => set({ draggingColor: color }),
 
   setPlayerId: (id) => set({ playerId: id }),
   setConnected: (connected) => set({ isConnected: connected }),

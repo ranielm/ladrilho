@@ -9,6 +9,7 @@ interface CenterPoolProps {
   onSelectTiles: (selection: TileSelection) => void;
   selectedTiles: TileSelection | null;
   disabled?: boolean;
+  onTileDrop?: (source: TileSelection, targetRow: number) => void;
 }
 
 export function CenterPool({
@@ -16,6 +17,7 @@ export function CenterPool({
   onSelectTiles,
   selectedTiles,
   disabled = false,
+  onTileDrop,
 }: CenterPoolProps) {
   const [hoveredColor, setHoveredColor] = useState<TileColor | null>(null);
   const isSelected = selectedTiles?.source === 'center';
@@ -89,6 +91,8 @@ export function CenterPool({
                   onClick={() => handleTileClick(tile.color)}
                   selected={isSelectedColor}
                   disabled={disabled}
+                  sourceInfo={{ source: 'center', color: tile.color }}
+                  onDrop={onTileDrop}
                 />
               </motion.div>
             );
