@@ -57,19 +57,26 @@ export function joinRoom(
   if (existingPlayerIndex !== -1) {
     const existingPlayer = room.gameState.players[existingPlayerIndex];
 
-    // If player exists and is disconnected, allow functionality to reconnect
-    // We allow this even if the game is in progress
-    if (!existingPlayer.isConnected) {
-      // Update player's ID to the new socket ID
+    // RECONNECTION LOGIC:
+    // Allow reconnection if:
+    // 1. Player is disconnected (standard case)
+    // 2. Player is "connected" but the socket ID is different (page refresh case)
+    //    This happens when the new page loads before the old socket's disconnect fires
+    const isNewSocket = existingPlayer.id !== playerId;
+    const canReconnect = !existingPlayer.isConnected || isNewSocket;
+
+    if (canReconnect) {
+      // Update player's ID to the new socket ID and mark connected
       room.gameState.players[existingPlayerIndex].id = playerId;
       room.gameState.players[existingPlayerIndex].isConnected = true;
 
       store.updateRoom(roomId, room);
+      console.log(`Player ${playerName} reconnected to room ${roomId} (isNewSocket: ${isNewSocket})`);
 
       return { success: true, room };
     }
 
-    // Otherwise name is taken by an active player
+    // Otherwise name is taken by an active player with the SAME socket ID (edge case)
     return { success: false, error: 'Name already taken in this room' };
   }
 
