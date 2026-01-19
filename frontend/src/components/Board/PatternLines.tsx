@@ -37,42 +37,45 @@ export function PatternLines({
         return (
           <div
             key={rowIndex}
-            onPointerUp={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              handleLineSelect(rowIndex, !!canPlace);
-            }}
-            style={{ touchAction: 'manipulation' }}
-            className={`
-              pattern-line h-[28px] flex items-center justify-end gap-1 px-2
-              ${canPlace && !disabled ? 'cursor-pointer hover:bg-slate-600 active:bg-slate-500' : ''}
-              ${isSelected ? 'bg-slate-600 ring-2 ring-yellow-400' : ''}
-              ${canPlace && !isSelected ? 'bg-slate-700/50' : ''}
-              rounded transition-all duration-150
-            `}
+            className="pattern-line h-[28px] flex justify-end px-2"
           >
-            {/* Empty slots */}
-            {Array.from({ length: line.capacity - line.count }).map((_, i) => (
-              <div
-                key={`empty-${i}`}
-                className="w-6 h-6 rounded-sm"
-                style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                  border: `2px dashed ${canPlace && !disabled ? 'rgba(232, 241, 242, 1)' : 'rgba(232, 241, 242, 0.5)'}`,
-                  boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.3)',
-                }}
-              />
-            ))}
+            <div
+              onPointerUp={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleLineSelect(rowIndex, !!canPlace);
+              }}
+              style={{ touchAction: 'manipulation' }}
+              className={`
+                flex items-center gap-1 p-1 -m-1 rounded transition-all duration-150
+                ${canPlace && !disabled ? 'cursor-pointer hover:bg-slate-600 active:bg-slate-500' : ''}
+                ${isSelected ? 'bg-slate-600 ring-2 ring-yellow-400' : ''}
+                ${canPlace && !isSelected ? 'bg-slate-700/50' : ''}
+              `}
+            >
+              {/* Empty slots */}
+              {Array.from({ length: line.capacity - line.count }).map((_, i) => (
+                <div
+                  key={`empty-${i}`}
+                  className="w-6 h-6 rounded-sm"
+                  style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    border: `2px dashed ${canPlace && !disabled ? 'rgba(232, 241, 242, 1)' : 'rgba(232, 241, 242, 0.5)'}`,
+                    boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.3)',
+                  }}
+                />
+              ))}
 
-            {/* Filled slots */}
-            {Array.from({ length: line.count }).map((_, i) => (
-              <Tile
-                key={`filled-${i}`}
-                color={line.color!}
-                size="sm"
-                disabled
-              />
-            ))}
+              {/* Filled slots */}
+              {Array.from({ length: line.count }).map((_, i) => (
+                <Tile
+                  key={`filled-${i}`}
+                  color={line.color!}
+                  size="sm"
+                  disabled
+                />
+              ))}
+            </div>
           </div>
         );
       })}

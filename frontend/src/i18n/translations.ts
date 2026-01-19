@@ -54,6 +54,7 @@ export const translations = {
     pts: 'pts',
     playing: 'Jogando...',
     factories: 'FÁBRICAS',
+    bag: 'RESTANTE NA SACOLA',
 
     // Game Over
     youWon: 'Você Venceu!',
@@ -222,6 +223,7 @@ export const translations = {
     pts: 'pts',
     playing: 'Playing...',
     factories: 'FACTORIES',
+    bag: 'REMAINING IN BAG',
 
     // Game Over
     youWon: 'You Won!',

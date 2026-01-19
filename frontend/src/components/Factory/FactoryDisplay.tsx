@@ -1,12 +1,13 @@
-import React from 'react';
-import { Factory as FactoryType, TileSelection, CenterPool as CenterPoolType } from '@shared/types';
+import { Factory as FactoryType, TileSelection, CenterPool as CenterPoolType, Tile as TileType, TileColor } from '@shared/types';
 import { Factory } from './Factory';
 import { CenterPool } from './CenterPool';
 import { useTranslation } from '../../i18n/useLanguage';
+import { Tile } from '../Tile/Tile'; // Assuming Tile component is exported from here or correct path
 
 interface FactoryDisplayProps {
   factories: FactoryType[];
   centerPool: CenterPoolType;
+  bag?: TileType[]; // Optional to support existing calls until updated
   onSelectTiles: (selection: TileSelection) => void;
   selectedTiles: TileSelection | null;
   disabled?: boolean;
@@ -15,11 +16,22 @@ interface FactoryDisplayProps {
 export function FactoryDisplay({
   factories,
   centerPool,
+  bag = [],
   onSelectTiles,
   selectedTiles,
   disabled = false,
 }: FactoryDisplayProps) {
   const { t } = useTranslation();
+
+  // Count tiles in bag by color
+  const bagCounts = bag.reduce((acc, tile) => {
+    // Tile is just a string (Color)
+    const color = tile as unknown as TileColor; // Safe cast if we trust shared types, or just 'tile' if it is TileColor
+    acc[color] = (acc[color] || 0) + 1;
+    return acc;
+  }, {} as Record<TileColor, number>);
+
+  const colors: TileColor[] = ['blue', 'yellow', 'red', 'black', 'white'];
 
   return (
     <div className="flex flex-col gap-6">
@@ -52,6 +64,26 @@ export function FactoryDisplay({
           disabled={disabled}
         />
       </div>
+
+      {/* Bag Remaining */}
+      {bag.length > 0 && (
+        <div className="mt-4 p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+          <h3 className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wide flex justify-between">
+            <span>{t.bag}</span>
+            <span>{bag.length}</span>
+          </h3>
+          <div className="flex justify-between gap-2">
+            {colors.map(color => (
+              <div key={color} className="flex flex-col items-center gap-1">
+                <div className="scale-75 origin-center">
+                  <Tile color={color} size="sm" disabled />
+                </div>
+                <span className="text-xs font-medium text-slate-300">{bagCounts[color] || 0}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

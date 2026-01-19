@@ -63,6 +63,13 @@ export function CenterPool({
           </motion.div>
         )}
 
+        {/* Tile Count Badge */}
+        {!isEmpty && (
+          <div className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center border-2 border-slate-800 z-10 shadow-lg">
+            {centerPool.tiles.length}
+          </div>
+        )}
+
         {allTiles.map((tile) => {
           const isDimmed = hoveredColor && hoveredColor !== tile.color;
           const isSelectedColor = isSelected && selectedTiles?.color === tile.color;

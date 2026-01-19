@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSocket } from './hooks/useSocket';
 import { useGameStore } from './store/gameStore';
+import { useAuthStore } from './store/authStore';
 import { LandingPage } from './components/Landing/LandingPage';
 import { CreateRoom } from './components/Room/CreateRoom';
 import { JoinRoom } from './components/Room/JoinRoom';
@@ -26,7 +27,19 @@ function App() {
   const { room, gameState, playerId, error, clearError, isConnected } =
     useGameStore();
 
+  const { activeGameId, user } = useAuthStore();
+
   const { t } = useTranslation();
+
+  // Handle automatic reconnection
+  useEffect(() => {
+    if (activeGameId && user?.username && isConnected) {
+      if (!room && !gameState) {
+        console.log('Attempting auto-reconnect to', activeGameId);
+        joinRoom(activeGameId, user.username);
+      }
+    }
+  }, [activeGameId, user?.username, isConnected, room, gameState, joinRoom]);
 
   // Check for room ID in URL
   useEffect(() => {

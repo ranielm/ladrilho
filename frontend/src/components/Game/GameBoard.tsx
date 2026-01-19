@@ -66,6 +66,7 @@ export function GameBoard({
             <FactoryDisplay
               factories={gameState.factories}
               centerPool={gameState.centerPool}
+              bag={gameState.bag}
               onSelectTiles={onSelectTiles}
               selectedTiles={selectedTiles}
               disabled={!isMyTurn}

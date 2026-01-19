@@ -54,11 +54,26 @@ export function joinRoom(
     return { success: false, error: 'Room is full' };
   }
 
-  // Check if player name is already taken
-  const nameTaken = room.gameState.players.some(
+  // Check if player name is already taken or if it's a reconnection
+  const existingPlayerIndex = room.gameState.players.findIndex(
     (p) => p.name.toLowerCase() === playerName.toLowerCase()
   );
-  if (nameTaken) {
+
+  if (existingPlayerIndex !== -1) {
+    const existingPlayer = room.gameState.players[existingPlayerIndex];
+
+    // If player exists and is disconnected, allow functionality to reconnect
+    if (!existingPlayer.isConnected) {
+      // Update player's ID to the new socket ID
+      room.gameState.players[existingPlayerIndex].id = playerId;
+      room.gameState.players[existingPlayerIndex].isConnected = true;
+
+      store.updateRoom(roomId, room);
+
+      return { success: true, room };
+    }
+
+    // Otherwise name is taken by an active player
     return { success: false, error: 'Name already taken in this room' };
   }
 

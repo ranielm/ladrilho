@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from '../../i18n/useLanguage';
 import { ConfirmModal } from '../UI/ConfirmModal';
 import { GameRules } from './GameRules';
+import { IconButton } from '../UI/IconButton';
 
 interface GameControlsProps {
   onLeaveGame: () => void;
@@ -13,6 +14,13 @@ export function GameControls({ onLeaveGame }: GameControlsProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [showRules, setShowRules] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark') ||
+        localStorage.getItem('theme') === 'dark';
+    }
+    return false;
+  });
 
   // Track fullscreen state
   useEffect(() => {
@@ -26,6 +34,17 @@ export function GameControls({ onLeaveGame }: GameControlsProps) {
     };
   }, []);
 
+  // Theme toggle effect
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDark]);
+
   const toggleFullscreen = useCallback(async () => {
     try {
       if (!document.fullscreenElement) {
@@ -37,6 +56,8 @@ export function GameControls({ onLeaveGame }: GameControlsProps) {
       console.error('Fullscreen error:', err);
     }
   }, []);
+
+  const toggleTheme = () => setIsDark(!isDark);
 
   const handleLeaveClick = () => {
     setShowLeaveModal(true);
@@ -56,96 +77,65 @@ export function GameControls({ onLeaveGame }: GameControlsProps) {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="fixed top-4 right-32 z-40 flex gap-2"
+        className="fixed top-4 right-32 z-40 flex items-center gap-2"
       >
+        {/* Theme Toggle */}
+        <IconButton
+          onClick={toggleTheme}
+          title={isDark ? 'Light Mode' : 'Dark Mode'}
+          icon={
+            isDark ? (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            )
+          }
+        />
+
         {/* Rules/Help Button */}
-        <motion.button
-          whileHover={{ y: -2, boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)' }}
-          whileTap={{ scale: 0.95 }}
+        <IconButton
           onClick={() => setShowRules(true)}
-          className="glass-card p-3 rounded-lg transition-all duration-200 group
-                     hover:border-blue-500/50"
           title={t.rules}
-        >
-          <svg
-            className="w-5 h-5 text-tile-white group-hover:text-blue-400 transition-colors"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-        </motion.button>
+          icon={
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          }
+        />
 
         {/* Fullscreen Toggle */}
-        <motion.button
-          whileHover={{ y: -2, boxShadow: '0 4px 12px rgba(232, 241, 242, 0.2)' }}
-          whileTap={{ scale: 0.95 }}
+        <IconButton
           onClick={toggleFullscreen}
-          className="glass-card p-3 rounded-lg transition-all duration-200 group"
           title={isFullscreen ? t.exitFullscreen : t.enterFullscreen}
-        >
-          {isFullscreen ? (
-            // Minimize icon
-            <svg
-              className="w-5 h-5 text-tile-white group-hover:text-white transition-colors"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25"
-              />
-            </svg>
-          ) : (
-            // Maximize icon
-            <svg
-              className="w-5 h-5 text-tile-white group-hover:text-white transition-colors"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"
-              />
-            </svg>
-          )}
-        </motion.button>
+          isActive={isFullscreen}
+          icon={
+            isFullscreen ? (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+              </svg>
+            )
+          }
+        />
 
         {/* Leave Game Button */}
-        <motion.button
-          whileHover={{ y: -2, boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)' }}
-          whileTap={{ scale: 0.95 }}
+        <IconButton
           onClick={handleLeaveClick}
-          className="glass-card p-3 rounded-lg transition-all duration-200 group
-                     hover:border-red-500/50"
           title={t.leaveGame}
-        >
-          <svg
-            className="w-5 h-5 text-tile-white group-hover:text-red-400 transition-colors"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-            />
-          </svg>
-        </motion.button>
+          variant="danger"
+          icon={
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          }
+        />
       </motion.div>
 
       {/* Leave Game Confirmation Modal */}
@@ -165,3 +155,4 @@ export function GameControls({ onLeaveGame }: GameControlsProps) {
     </>
   );
 }
+
