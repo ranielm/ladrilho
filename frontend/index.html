@@ -9,6 +9,23 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="theme-color" content="#0f172a" />
     <title>Ladrilho</title>
+    <script>
+      (function() {
+        try {
+          const stored = localStorage.getItem('ladrilho-theme');
+          let isDark = true;
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            isDark = parsed.state.theme !== 'light';
+          }
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
