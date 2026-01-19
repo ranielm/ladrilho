@@ -4,6 +4,7 @@ import { useTranslation } from '../../i18n/useLanguage';
 import { ConfirmModal } from '../UI/ConfirmModal';
 import { GameRules } from './GameRules';
 import { IconButton } from '../UI/IconButton';
+import { useThemeStore } from '../../store/themeStore';
 
 interface GameControlsProps {
   onLeaveGame: () => void;
@@ -15,13 +16,10 @@ export function GameControls({ onLeaveGame, onShowTutorial }: GameControlsProps)
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [showRules, setShowRules] = useState(false);
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return document.documentElement.classList.contains('dark') ||
-        localStorage.getItem('theme') === 'dark';
-    }
-    return false;
-  });
+
+  // Use global theme store
+  const { theme, toggleTheme } = useThemeStore();
+  const isDark = theme === 'dark';
 
   // Track fullscreen state
   useEffect(() => {
@@ -35,17 +33,6 @@ export function GameControls({ onLeaveGame, onShowTutorial }: GameControlsProps)
     };
   }, []);
 
-  // Theme toggle effect
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDark]);
-
   const toggleFullscreen = useCallback(async () => {
     try {
       if (!document.fullscreenElement) {
@@ -57,8 +44,6 @@ export function GameControls({ onLeaveGame, onShowTutorial }: GameControlsProps)
       console.error('Fullscreen error:', err);
     }
   }, []);
-
-  const toggleTheme = () => setIsDark(!isDark);
 
   const handleLeaveClick = () => {
     setShowLeaveModal(true);

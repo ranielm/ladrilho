@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useSocket } from './hooks/useSocket';
 import { useGameStore } from './store/gameStore';
 import { useAuthStore } from './store/authStore';
+import { useThemeStore } from './store/themeStore';
 import { LandingPage } from './components/Landing/LandingPage';
 import { CreateRoom } from './components/Room/CreateRoom';
 import { JoinRoom } from './components/Room/JoinRoom';
@@ -33,6 +34,17 @@ function App() {
   const { activeGameId, user, setActiveGameId } = useAuthStore();
 
   const { t } = useTranslation();
+  const { theme } = useThemeStore();
+
+  // Apply theme to document
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [theme]);
 
   // Handle automatic reconnection
   useEffect(() => {
