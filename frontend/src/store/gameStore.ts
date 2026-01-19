@@ -4,6 +4,7 @@ import {
   GameState,
   TileColor,
   TileSelection,
+  WallHighlight,
 } from '@shared/types';
 
 interface GameStore {
@@ -19,6 +20,7 @@ interface GameStore {
 
   // UI state
   selectedTiles: TileSelection | null;
+  highlightedCells: WallHighlight[];
   error: string | null;
 
   // Actions
@@ -27,6 +29,7 @@ interface GameStore {
   setRoom: (room: Room | null | ((prev: Room | null) => Room | null)) => void;
   setGameState: (gameState: GameState | null | ((prev: GameState | null) => GameState | null)) => void;
   setSelectedTiles: (selection: TileSelection | null) => void;
+  setHighlightedCells: (highlights: WallHighlight[]) => void;
   setError: (error: string | null) => void;
   clearError: () => void;
   reset: () => void;
@@ -38,6 +41,7 @@ const initialState = {
   room: null,
   gameState: null,
   selectedTiles: null,
+  highlightedCells: [],
   error: null,
 };
 
@@ -53,6 +57,7 @@ export const useGameStore = create<GameStore>((set) => ({
     gameState: typeof gameState === 'function' ? gameState(state.gameState) : gameState
   })),
   setSelectedTiles: (selection) => set({ selectedTiles: selection }),
+  setHighlightedCells: (highlights) => set({ highlightedCells: highlights }),
   setError: (error) => set({ error }),
   clearError: () => set({ error: null }),
   reset: () => set(initialState),

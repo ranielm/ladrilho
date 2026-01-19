@@ -112,6 +112,22 @@ export interface FinalScore {
   finalTotal: number;
 }
 
+export interface ScoreDetail {
+  row: number;
+  col: number; // 0-4
+  color: TileColor;
+  basePoints: number;
+  horizontalBonus: number;
+  verticalBonus: number;
+  total: number;
+}
+
+export interface WallHighlight {
+  row: number;
+  col: number;
+  type: 'focus' | 'neighbor'; // focus = the placed tile, neighbor = contributed to score
+}
+
 // Socket event payloads
 export interface CreateRoomPayload {
   playerName: string;

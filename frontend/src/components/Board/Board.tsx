@@ -138,7 +138,7 @@ export function Board({
             </div>
 
             <div className="wall-container">
-              <Wall wall={player.board.wall} />
+              <Wall wall={player.board.wall} isMyBoard={isMyBoard} />
             </div>
           </div>
         </div>
