@@ -9,18 +9,18 @@ interface SharedScoreTrackProps {
 
 // Player colors for pins
 const PLAYER_COLORS = [
-    { bg: 'bg-blue-500', border: 'border-blue-300', shadow: 'shadow-blue-500/50' },
-    { bg: 'bg-red-500', border: 'border-red-300', shadow: 'shadow-red-500/50' },
-    { bg: 'bg-green-500', border: 'border-green-300', shadow: 'shadow-green-500/50' },
-    { bg: 'bg-yellow-500', border: 'border-yellow-300', shadow: 'shadow-yellow-500/50' },
+    { bg: 'bg-blue-500', border: 'border-blue-300', shadow: 'shadow-blue-500/50', gradient: 'from-blue-500 to-blue-600' },
+    { bg: 'bg-red-500', border: 'border-red-300', shadow: 'shadow-red-500/50', gradient: 'from-red-500 to-red-600' },
+    { bg: 'bg-emerald-500', border: 'border-emerald-300', shadow: 'shadow-emerald-500/50', gradient: 'from-emerald-500 to-emerald-600' },
+    { bg: 'bg-amber-500', border: 'border-amber-300', shadow: 'shadow-amber-500/50', gradient: 'from-amber-500 to-amber-600' },
 ];
 
 // Pin offsets when multiple players have same score
 const PIN_OFFSETS = [
-    { x: -4, y: -4 },
-    { x: 4, y: -4 },
-    { x: -4, y: 4 },
-    { x: 4, y: 4 },
+    { x: -6, y: 0 },
+    { x: 6, y: 0 },
+    { x: 0, y: -6 },
+    { x: 0, y: 6 },
 ];
 
 export function SharedScoreTrack({ players, currentPlayerId }: SharedScoreTrackProps) {
@@ -35,8 +35,10 @@ export function SharedScoreTrack({ players, currentPlayerId }: SharedScoreTrackP
         return map;
     }, [players]);
 
-    // Generate cells 0-100
-    const cells = useMemo(() => Array.from({ length: 101 }, (_, i) => i), []);
+    // Only show milestone cells for cleaner look: 0, 5, 10, 15, ... 100
+    const milestoneCells = useMemo(() =>
+        Array.from({ length: 21 }, (_, i) => i * 5),
+        []);
 
     // Get player index for color assignment
     const getPlayerColor = (playerId: string) => {
@@ -44,93 +46,126 @@ export function SharedScoreTrack({ players, currentPlayerId }: SharedScoreTrackP
         return PLAYER_COLORS[index % PLAYER_COLORS.length];
     };
 
-    // Get initial letter for player pin
-    const getPlayerInitial = (name: string) => {
-        return name.charAt(0).toUpperCase();
+    // Find which milestone cell a player should be on (rounds down to nearest 5)
+    const getPlayerMilestoneCell = (score: number) => {
+        return Math.floor(score / 5) * 5;
+    };
+
+    // Get players on a specific milestone (within 5-point range)
+    const getPlayersNearMilestone = (milestone: number) => {
+        const playersInRange: Player[] = [];
+        for (let i = milestone; i < milestone + 5 && i <= 100; i++) {
+            const playersAtScore = playersByScore.get(i) || [];
+            playersInRange.push(...playersAtScore);
+        }
+        return playersInRange;
     };
 
     return (
-        <div className="w-full glass-card p-4 rounded-xl mb-4">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
-                    Score Track
-                </h3>
-                <div className="flex gap-2">
-                    {players.map((player, idx) => (
-                        <div key={player.id} className="flex items-center gap-1">
-                            <div
-                                className={`w-3 h-3 rounded-full ${PLAYER_COLORS[idx % PLAYER_COLORS.length].bg}`}
-                            />
-                            <span className="text-xs text-slate-400">
-                                {player.name}: <span className="text-white font-bold">{player.board.score}</span>
+        <div className="w-full mb-4">
+            {/* Player Legend - Compact horizontal list */}
+            <div className="flex items-center justify-center gap-4 mb-3 flex-wrap">
+                {players.map((player, idx) => {
+                    const color = PLAYER_COLORS[idx % PLAYER_COLORS.length];
+                    const isLeading = players.every(p => p.board.score <= player.board.score);
+
+                    return (
+                        <motion.div
+                            key={player.id}
+                            className={`
+                flex items-center gap-2 px-3 py-1.5 rounded-full
+                bg-gradient-to-r ${color.gradient} bg-opacity-20
+                border border-white/10
+                ${player.id === currentPlayerId ? 'ring-2 ring-white/50' : ''}
+              `}
+                            whileHover={{ scale: 1.05 }}
+                        >
+                            <div className={`w-4 h-4 rounded-full ${color.bg} border-2 border-white/50 shadow-md`} />
+                            <span className="text-sm font-medium text-white">
+                                {player.name}
                             </span>
-                        </div>
-                    ))}
-                </div>
+                            <span className={`
+                text-lg font-bold 
+                ${isLeading && players.length > 1 ? 'text-yellow-300' : 'text-white'}
+              `}>
+                                {player.board.score}
+                            </span>
+                            {isLeading && players.length > 1 && (
+                                <span className="text-yellow-300 text-xs">👑</span>
+                            )}
+                        </motion.div>
+                    );
+                })}
             </div>
 
-            {/* Score Track Grid */}
-            <div className="relative">
-                <div className="flex flex-wrap gap-[2px]">
-                    {cells.map(cellNum => {
-                        const isMilestone = cellNum % 10 === 0;
-                        const playersOnCell = playersByScore.get(cellNum) || [];
+            {/* Score Track - Clean horizontal bar */}
+            <div className="relative bg-slate-800/50 rounded-2xl p-3 border border-slate-700/30">
+                <div className="flex items-center gap-1 overflow-x-auto pb-2">
+                    {milestoneCells.map(cellNum => {
+                        const playersNear = getPlayersNearMilestone(cellNum);
+                        const isMajorMilestone = cellNum % 20 === 0;
+                        const isEndpoint = cellNum === 0 || cellNum === 100;
 
                         return (
                             <div
                                 key={cellNum}
                                 className={`
-                  relative flex items-center justify-center
-                  w-6 h-6 sm:w-7 sm:h-7 rounded-sm text-[10px] font-medium
-                  transition-all duration-200
-                  ${isMilestone
-                                        ? 'bg-slate-600/80 text-slate-200 border border-slate-500'
-                                        : 'bg-slate-800/50 text-slate-500 border border-slate-700/30'
+                  relative flex flex-col items-center justify-center flex-shrink-0
+                  ${isMajorMilestone || isEndpoint ? 'w-12 h-12' : 'w-8 h-8'}
+                  rounded-lg transition-all duration-200
+                  ${isEndpoint
+                                        ? 'bg-gradient-to-br from-slate-600 to-slate-700 border-2 border-slate-500'
+                                        : isMajorMilestone
+                                            ? 'bg-slate-700/80 border border-slate-600'
+                                            : 'bg-slate-800/60 border border-slate-700/40'
                                     }
-                  ${playersOnCell.length > 0 ? 'ring-1 ring-yellow-400/50' : ''}
                 `}
                             >
-                                {/* Cell number (only show for milestones or empty cells) */}
-                                {(isMilestone || playersOnCell.length === 0) && (
-                                    <span className={playersOnCell.length > 0 ? 'opacity-30' : ''}>
-                                        {cellNum}
-                                    </span>
-                                )}
+                                {/* Cell number */}
+                                <span className={`
+                  font-mono font-bold
+                  ${isEndpoint ? 'text-base text-white' : isMajorMilestone ? 'text-xs text-slate-300' : 'text-[10px] text-slate-500'}
+                `}>
+                                    {cellNum}
+                                </span>
 
                                 {/* Player Pins */}
-                                {playersOnCell.map((player, pinIdx) => {
+                                {playersNear.map((player, pinIdx) => {
                                     const color = getPlayerColor(player.id);
-                                    const offset = playersOnCell.length > 1 ? PIN_OFFSETS[pinIdx % PIN_OFFSETS.length] : { x: 0, y: 0 };
+                                    const offset = playersNear.length > 1 ? PIN_OFFSETS[pinIdx % PIN_OFFSETS.length] : { x: 0, y: 0 };
                                     const isCurrentPlayer = player.id === currentPlayerId;
+                                    const exactScore = player.board.score;
+
+                                    // Only show on the correct milestone cell
+                                    if (getPlayerMilestoneCell(exactScore) !== cellNum) return null;
 
                                     return (
                                         <motion.div
                                             key={player.id}
-                                            initial={{ scale: 0 }}
+                                            initial={{ scale: 0, y: 20 }}
                                             animate={{
                                                 scale: 1,
                                                 x: offset.x,
-                                                y: offset.y,
+                                                y: offset.y - 20,
                                             }}
                                             transition={{
                                                 type: 'spring',
-                                                stiffness: 300,
-                                                damping: 20,
-                                                delay: pinIdx * 0.05
+                                                stiffness: 400,
+                                                damping: 25,
                                             }}
                                             className={`
-                        absolute w-5 h-5 sm:w-6 sm:h-6 rounded-full
-                        ${color.bg} border-2 ${color.border}
+                        absolute w-7 h-7 rounded-full
+                        ${color.bg} border-2 border-white
                         flex items-center justify-center
-                        text-[9px] sm:text-[10px] font-bold text-white
+                        text-xs font-bold text-white
                         shadow-lg ${color.shadow}
-                        ${isCurrentPlayer ? 'ring-2 ring-white animate-pulse' : ''}
-                        z-10
+                        ${isCurrentPlayer ? 'ring-2 ring-yellow-400 animate-bounce' : ''}
+                        z-20
                       `}
-                                            title={`${player.name}: ${player.board.score} pts`}
+                                            style={{ top: '-8px' }}
+                                            title={`${player.name}: ${exactScore} pts`}
                                         >
-                                            {getPlayerInitial(player.name)}
+                                            {player.name.charAt(0).toUpperCase()}
                                         </motion.div>
                                     );
                                 })}
@@ -139,26 +174,8 @@ export function SharedScoreTrack({ players, currentPlayerId }: SharedScoreTrackP
                     })}
                 </div>
 
-                {/* Progress bar overlay for visual effect */}
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-800 rounded-full mt-2 overflow-hidden">
-                    {players.map((player, idx) => {
-                        const progress = Math.min(100, player.board.score);
-                        return (
-                            <motion.div
-                                key={player.id}
-                                initial={{ width: 0 }}
-                                animate={{ width: `${progress}%` }}
-                                transition={{ duration: 0.5, ease: 'easeOut' }}
-                                className={`absolute h-full ${PLAYER_COLORS[idx % PLAYER_COLORS.length].bg} opacity-60`}
-                                style={{
-                                    zIndex: players.length - idx,
-                                    top: 0,
-                                    left: 0,
-                                }}
-                            />
-                        );
-                    })}
-                </div>
+                {/* Connecting line */}
+                <div className="absolute top-1/2 left-3 right-3 h-1 bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 rounded-full -z-0 transform -translate-y-1/2" />
             </div>
         </div>
     );

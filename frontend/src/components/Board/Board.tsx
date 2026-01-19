@@ -4,7 +4,6 @@ import { Player, TileSelection, TilePlacement, PlayerMove } from '@shared/types'
 import { PatternLines } from './PatternLines';
 import { Wall } from './Wall';
 import { FloorLine } from './FloorLine';
-import { ScoreTrack } from './ScoreTrack';
 import { getValidPatternLines } from '../../utils/gameHelpers';
 import { useTranslation } from '../../i18n/useLanguage';
 
@@ -97,13 +96,6 @@ export function Board({
             {isMyBoard && ` (${t.you})`}
             {player.isHost && ` (${t.host})`}
           </span>
-        </div>
-      </div>
-      <div className="mb-4 overflow-x-auto pb-2">
-        {/* Score Track */}
-        <div className="min-w-[600px] lg:min-w-0">
-          {/* We might need a wrapper to ensure it fits or scrolls on very small screens if it's too wide */}
-          <ScoreTrack score={player.board.score} color={isMyBoard ? 'bg-blue-600' : 'bg-slate-600'} />
         </div>
       </div>
 
