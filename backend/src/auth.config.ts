@@ -181,6 +181,15 @@ console.log("DEBUG: Env Check", {
 });
 console.log("========================================");
 
+// Production detection for cross-site cookie handling
+const isProduction = process.env.NODE_ENV === 'production';
+console.log("========================================");
+console.log("ENVIRONMENT CHECK:", {
+    NODE_ENV: process.env.NODE_ENV,
+    isProduction,
+});
+console.log("========================================");
+
 export const authConfig = {
     providers: [
         Google({
@@ -199,6 +208,44 @@ export const authConfig = {
     trustHost: true,
     basePath: '/api/auth',
     debug: true,
+    // Cross-site cookie configuration for production (different domains)
+    cookies: {
+        pkceCodeVerifier: {
+            name: 'authjs.pkce.code_verifier',
+            options: {
+                httpOnly: true,
+                sameSite: isProduction ? 'none' as const : 'lax' as const,
+                path: '/',
+                secure: isProduction,
+            },
+        },
+        state: {
+            name: 'authjs.state',
+            options: {
+                httpOnly: true,
+                sameSite: isProduction ? 'none' as const : 'lax' as const,
+                path: '/',
+                secure: isProduction,
+            },
+        },
+        callbackUrl: {
+            name: 'authjs.callback-url',
+            options: {
+                sameSite: isProduction ? 'none' as const : 'lax' as const,
+                path: '/',
+                secure: isProduction,
+            },
+        },
+        csrfToken: {
+            name: 'authjs.csrf-token',
+            options: {
+                httpOnly: true,
+                sameSite: isProduction ? 'none' as const : 'lax' as const,
+                path: '/',
+                secure: isProduction,
+            },
+        },
+    },
     callbacks: {
         async redirect({ url, baseUrl }: any) {
             // ALWAYS redirect to the frontend after any auth action (signin/signout)
