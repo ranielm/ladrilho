@@ -70,8 +70,8 @@ class SocketService {
 
   private tryAutoReconnect(): void {
     // Try to reconnect to room if we have stored session
-    const storedRoomId = localStorage.getItem('azul-room-id');
-    const storedPlayerId = localStorage.getItem('azul-player-id');
+    const storedRoomId = localStorage.getItem('ladrilho-room-id');
+    const storedPlayerId = localStorage.getItem('ladrilho-player-id');
     if (storedRoomId && storedPlayerId) {
       console.log('Attempting to reconnect to room:', storedRoomId);
       this.reconnect(storedRoomId, storedPlayerId);
