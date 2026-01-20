@@ -24,7 +24,7 @@ html:not(.dark) body {
 
 /* Landing Page Styles */
 .landing-background {
-  @apply bg-slate-900;
+  @apply bg-transparent;
   position: relative;
 }
 
