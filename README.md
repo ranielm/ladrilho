@@ -75,6 +75,14 @@ ladrilho/
 - **Backend:** Node.js, Express, Socket.io, TypeScript
 - **DevOps:** Docker, Docker Compose
 
+## Internationalization
+
+The game supports multiple languages:
+- 🇧🇷 Portuguese (PT-BR)
+- 🇺🇸 English (EN-US)
+
+Language preference is saved in localStorage and persists across sessions.
+
 ## Game Rules
 
 See [LADRILHO.md](./LADRILHO.md) for complete game rules and implementation details.
